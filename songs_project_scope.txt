@@ -1,0 +1,371 @@
+PROJECT OVERVIEW & DATA INTEGRATION GUIDE
+==========================================
+
+PROJECT NAME:
+Knowledge Engineering Analysis of Grammy-Nominated Works: Production Characteristics, Genre Associations, and Artist Patterns
+
+GOAL:
+Build a knowledge graph that models the relationships between Grammy categories, genres, production characteristics, listener engagement, and artist patterns. Use this graph to answer three knowledge engineering research questions about how genres associate with categories, how production profiles characterize winners vs. nominees, and how multi-category artists maintain or adapt their sonic signatures.
+
+PROJECT TYPE:
+Knowledge Engineering (not predictive analytics). Focus is on building knowledge structures, discovering associations, and characterizing patterns—not on building predictive models or establishing causal relationships.
+
+---
+
+DATA SOURCES & INTEGRATION
+===========================
+
+DATASET 1: GRAMMY AWARDS (Your existing Kaggle dataset)
+Source: https://www.kaggle.com/datasets/kfoster150/grammy-award-nominees-and-winners-1958-2024
+Format: CSV
+Size: ~25,305 records
+Key columns needed:
+  - year (Grammy ceremony year)
+  - category (Grammy category name, e.g., "Album of the Year", "Best Rock Album")
+  - nominee (artist name or person name)
+  - workers (track title or album title; this is the "work" being nominated)
+  - winner (boolean: true if won, false if only nominated)
+
+Purpose in project: Provides the canonical list of Grammy nominations/wins and their categories across 1958–2024. This is the "reference truth" dataset.
+
+Data scope: You'll filter to work-type records only (excluding person-level rows where workers is null).
+
+---
+
+DATASET 2: WASABI SONG CORPUS (Download from Mega.nz)
+Source: GitHub: https://github.com/micbuffa/WasabiDataset
+Downloads:
+  - 2.1M songs CSV: https://mega.nz/file/ilwk1IDR#x0EqlS3larxBlOpYaq1Gb81ZCAkxuMPAI3dwQxjAgGo
+  - 77k artists CSV: https://mega.nz/file/qwAm2KjR#BRQCyVCQq1eObGXHV5DTqHY_NlYmhdVBcd939aixrTo
+  - 208k albums CSV: https://mega.nz/file/mgZTjZiK#f8_CzSSC3j8nt75hZ8WqNMFSB_i8AvuB_olZ8hisl1E
+
+Format: CSV (download manually via browser; Mega requires client-side decryption)
+Key columns in SONGS CSV (main file you'll use):
+  - title (song/track title)
+  - artist_name (artist name associated with the song)
+  - album_title or album (album containing the song)
+  - genre (genre tags; may be comma-separated or in a structured format)
+  - bpm (beats per minute; numeric, production characteristic)
+  - gain (loudness in decibels; numeric, production characteristic)
+  - publicationDate or release_year (when the song was released)
+  - chords (chord sequence; sparse coverage, ~25% of songs)
+  - language (detected language of lyrics)
+  - durationMs (song duration in milliseconds)
+  - Other columns may include: dbpedia_id, musicbrainz_id, deezer_id (links to other knowledge bases)
+
+Key columns in ARTISTS CSV (secondary; for reference):
+  - artist_name
+  - artist_id or wasabi_id
+  - genre (may have artist-level genre tags)
+  - dbpedia_genre (from DBpedia knowledge base)
+
+Purpose in project: Provides rich metadata about commercially released music including production characteristics (BPM, loudness), genre tags, release dates. These are the songs/albums we try to match against Grammy nominations.
+
+Data scope: You'll use the SONGS CSV as the primary source. The ARTISTS CSV is optional, for enrichment or reference.
+
+WHY BOTH SONGS AND ARTISTS:
+You need the SONGS CSV to match Grammy works (by title and artist name) and extract production characteristics (BPM, loudness, genre). The ARTISTS CSV could be used to enrich your knowledge graph with artist-level metadata (e.g., did DBpedia classify this artist as "rock" or "pop"?), but it's not essential for the core matching. For now, focus on SONGS CSV.
+
+---
+
+DATASET 3: LAST.FM ENGAGEMENT DATA (Via API)
+Source: Last.fm free API (no authentication wall, just free API key registration)
+API endpoint: https://www.last.fm/api/show/[endpoint_name]
+Documentation: https://www.last.fm/api
+
+What you query from Last.fm:
+After you've matched Grammy works to WASABI songs, you'll use the Last.fm API to retrieve engagement metrics for matched tracks. Two key endpoints:
+
+1. track.getInfo endpoint:
+   Query: track.getInfo?artist=[artist_name]&track=[track_title]&api_key=[your_key]
+   Returns: 
+     - listeners (numeric: how many unique Last.fm users have scrobbled this track)
+     - playcount (numeric: total number of times this track has been played across all Last.fm users)
+   Rate limit: ~1 request per second (no hard published limit; ~5 req/sec is safe in practice)
+   
+2. artist.getInfo endpoint (optional):
+   Query: artist.getInfo?artist=[artist_name]&api_key=[your_key]
+   Returns:
+     - listeners (unique listeners for the artist)
+     - playcount (total plays for the artist)
+     - top_tags (genre tags as voted by Last.fm community)
+
+Purpose in project: Provides listener engagement metrics (listeners, playcount) for tracks that you've matched to WASABI. These are aggregated signals of how many people on Last.fm have engaged with a track over the platform's history (since ~2003).
+
+Data scope: Only query for the subset of WASABI-matched Grammy works. Don't query all 2.1M WASABI songs. Expected number of API calls: ~3,000–5,000 (one call per unique WASABI-matched Grammy work). This takes ~1–2 hours total.
+
+IMPORTANT NOTES ON LAST.FM:
+- Last.fm has a documented bias toward rock, indie, and popular music listeners. Jazz, classical, gospel, and world music are underrepresented.
+- Listener counts are aggregated since Last.fm's founding (~2003). Pre-2003 Grammy nominees won't have Last.fm data.
+- Playcount reflects listening patterns across all Last.fm users, not streaming revenue or Spotify metrics.
+- You'll accept this bias upfront and stratify your analysis by category, noting which categories have robust Last.fm coverage (Pop, Rock, R&B, Country, Hip-Hop, Electronic) and which have sparse coverage (Classical, Jazz, Gospel, World).
+
+---
+
+MATCHING LOGIC: HOW DATASETS CONNECT
+=====================================
+
+STEP 1: NORMALIZE & MATCH GRAMMY TO WASABI
+Input: Grammy CSV (work-type rows: nominee, workers, year, category, winner)
+Input: WASABI songs CSV (title, artist_name, genre, bpm, gain, release date)
+
+Normalization:
+  - Lowercase all text
+  - Remove parentheticals (e.g., "feat. [artist]", "(deluxe edition)")
+  - Remove punctuation
+  - Collapse whitespace
+
+Matching strategy (exact match on normalized text):
+  For each Grammy work record:
+    - Normalize grammy.nominee → grammy_artist_norm
+    - Normalize grammy.workers → grammy_work_norm
+    - Try to match (grammy_artist_norm, grammy_work_norm) against WASABI records where:
+      - (wasabi.artist_name normalized = grammy_artist_norm) AND
+      - (wasabi.title normalized = grammy_work_norm OR wasabi.album_title normalized = grammy_work_norm)
+    - If match found: add WASABI row's genre, bpm, gain, release_year, etc. to the Grammy record
+
+Output: Matched dataset with ~30–40% coverage (i.e., 7,500–10,000 of ~25,000 Grammy work records matched)
+This matched dataset is your "Grammy-WASABI bridge": it now includes Grammy metadata + WASABI production/genre metadata.
+
+STEP 2: ENRICH WITH LAST.FM ENGAGEMENT
+Input: Matched dataset from Step 1 (Grammy + WASABI fields)
+
+For each matched record:
+  - Extract the artist_name and title from the matched WASABI record
+  - Query Last.fm API: track.getInfo(artist, title)
+  - Extract returned listeners and playcount
+  - Add listeners and playcount columns to the matched record
+
+Output: Final enriched dataset (7,500–10,000 records with Grammy + WASABI + Last.fm)
+This is your analytical dataset for answering the three RQs.
+
+---
+
+DATA FLOW SUMMARY
+=================
+
+Grammy CSV → [normalize & match] → Matched Grammy-WASABI (30–40% coverage)
+                ↑
+            WASABI songs CSV (2.1M)
+            [normalize]
+
+Matched Grammy-WASABI → [API calls] → Final enriched dataset (Grammy + WASABI + Last.fm)
+                         ↑
+                    Last.fm API
+
+---
+
+WHAT WE DO WITH MATCHED DATA: KNOWLEDGE GRAPH BUILDING
+=======================================================
+
+Once you have the final enriched dataset, you'll structure it as a knowledge graph with the following entities and relationships:
+
+ENTITIES (Node types):
+  - Grammy_Category (e.g., "Album of the Year", "Best Rock Album", "Best Pop Vocal Album")
+  - Genre (e.g., "Pop", "Rock", "R&B", "Country", "Hip-Hop", "Electronic", "Jazz", "Classical", etc.)
+  - Artist (e.g., "Taylor Swift", "The Beatles", "Beyoncé")
+  - Work (e.g., "Midnights" album, "Blinding Lights" track)
+  - Decade (e.g., "1960s", "1970s", "2020s")
+  - Outcome_Status (Winner, Nominee)
+  - Engagement_Level (Low, Medium, High)—binned from Last.fm listeners/playcount
+  - Production_Profile (BPM_Fast, BPM_Slow; Loudness_High, Loudness_Low)—binned from WASABI bpm/gain
+
+RELATIONSHIPS (Edge types):
+  - nominated_in(Work, Grammy_Category, Year)
+  - has_outcome(Work, Outcome_Status)
+  - has_genre(Work, Genre)—could be multiple genres
+  - performed_by(Work, Artist)
+  - published_in(Work, Decade)
+  - has_engagement(Work, Last.fm_listeners, Last.fm_playcount)
+  - has_production_characteristics(Work, BPM, Loudness_gain)
+  - spans_categories(Artist, [list of categories])—for multi-category artists
+  - characterizes(Production_Profile, Outcome_Status, Grammy_Category)
+  - associates_with(Genre, Grammy_Category)
+  - varies_across_categories(Artist, Characteristic)—for RQ3
+
+KNOWLEDGE GRAPH QUERIES (These become your analytical backbone):
+  1. "Which genres most frequently associate with each Grammy category?"
+  2. "For a given category (e.g., Rock), what is the genre distribution of winners vs. nominees?"
+  3. "For a given category (e.g., Pop), what is the median BPM and loudness for winners vs. nominees?"
+  4. "Which artists span multiple categories, and for each category they span, what are their characteristic BPM/loudness profiles?"
+  5. "How has the genre distribution of a category (e.g., Country) evolved across decades?"
+
+---
+
+ANALYTICAL APPROACH FOR RQ1, RQ2, RQ3
+=====================================
+
+RQ1: GENRE-CATEGORY ASSOCIATION ACROSS TIME
+Analysis approach:
+  - Cross-tabulate (Grammy_Category, Genre) from matched records
+  - Calculate frequencies: "How many times does [Genre] appear with [Category]?"
+  - For each decade (1960s, 1970s, ..., 2020s), repeat cross-tabulation
+  - Compute association metrics:
+    * Frequency: raw count
+    * Proportion: percentage of [Category] nominations that include [Genre]
+    * Jaccard similarity: overlap of genre sets between categories
+    * Chi-square test of independence: are genres and categories statistically associated?
+  - Identify (Genre, Category) pairs that are:
+    * Common (high frequency)
+    * Rare (low frequency)
+    * Non-existent (impossible pairing)
+    * Category-exclusive (only associated with one category)
+  - Visualizations: heatmaps, temporal evolution charts
+
+Data requirements: Grammy metadata (category, year) + WASABI metadata (genre tags from matched dataset)
+
+---
+
+RQ2: PRODUCTION/ENGAGEMENT PROFILES BY OUTCOME WITHIN CATEGORY
+Analysis approach:
+  - Stratify by Grammy_Category (separate analysis for Rock, Pop, Country, etc.)
+  - Within each category, split records into two groups: Winners vs. Nominees
+  - For each group, compute distributions:
+    * Genre diversity (Shannon entropy or simple count of unique genres)
+    * Engagement metrics (median listeners, median playcount, interquartile range)
+    * Production characteristics (median BPM, median loudness, IQR)
+  - Compare distributions between winners and nominees:
+    * Kruskal-Wallis test (non-parametric, suitable for limited samples and non-normal distributions)
+    * Mann-Whitney U test (pairwise comparison)
+    * Effect size (eta-squared, rank-biserial correlation)
+  - Document findings as: "In the Rock category, winners are characterized by a median BPM of X, while nominees have a median of Y. This difference is [significant/not significant]."
+  - Repeat for each category separately (Rock, Pop, Country, etc.)
+  - Note which categories have robust data vs. sparse data
+  - Explicitly exclude or flag categories with <20 matched records
+
+Data requirements: Grammy metadata (category, outcome) + WASABI metadata (genre, bpm, gain) + Last.fm metadata (listeners, playcount)
+
+---
+
+RQ3: MULTI-CATEGORY ARTISTS & SONIC CONSISTENCY
+Analysis approach:
+  - Identify artists with nominations in ≥2 distinct Grammy categories
+  - For each such artist, extract all their nominated works and their associated categories
+  - Within each artist, for each category they span:
+    * Compute their median BPM
+    * Compute their median loudness
+    * Compute their median listeners/playcount
+    * List genres associated with that category's works
+  - Compare these values across categories:
+    * Does Taylor Swift's nominated works in Pop have different BPM than her Country nominations?
+    * Is the genre set different? (e.g., Pop includes "Pop", "Dance"; Country includes "Country", "Folk")
+    * Is listener engagement consistent or category-dependent?
+  - Classify artists by their consistency pattern:
+    * "Signature-consistent": maintains similar BPM, loudness, and genre across categories
+    * "Adaptive": varies BPM, loudness, and/or genre per category
+    * "Mixed": consistent in some characteristics, varying in others
+  - Control for potential confounds:
+    * Does variance reflect release year differences? (older songs might have different loudness standards)
+    * Does variance reflect category norms? (e.g., if Rock inherently has faster BPM, artist variance might just reflect category differences)
+
+Data requirements: Same as RQ2, but with a focus on within-artist comparisons across their multiple categories
+
+---
+
+SCOPE & COVERAGE NOTES
+======================
+
+WHAT YOU HAVE:
+  - Grammy records: 25,305 total → ~18,000–20,000 work-type (after filtering out person-level rows)
+  - WASABI coverage: 30–40% match rate → 5,400–8,000 matched Grammy works
+  - Last.fm engagement: ~3,000–5,000 API calls needed (one per matched work)
+  - Well-represented genres in Last.fm: Pop, Rock, R&B, Country, Hip-Hop, Electronic
+  - Sparse genres in Last.fm: Classical, Jazz, Gospel, World Music, Electronic (borderline)
+
+WHAT YOU DON'T HAVE:
+  - Perceptual audio features from Spotify (danceability, energy, valence, acousticness)
+  - Pre-2003 engagement data (Last.fm founded in 2003)
+  - Post-2018 audio feature coverage (WASABI stops around 2018 for some metadata)
+  - Complete coverage of niche genres (Classical, Jazz, Gospel, World Music in Last.fm)
+
+WHAT YOU SHOULD DO UPFRONT:
+  - Document coverage by category: "Pop has 2,500 matched nominations; Jazz has 150 matched nominations"
+  - Stratify your analysis: report results separately for high-coverage categories vs. sparse-coverage categories
+  - State limitations in your methodology: "This analysis focuses on mainstream commercial music well-represented in Last.fm (Pop, Rock, R&B, Country, Hip-Hop, Electronic). Classical, Jazz, Gospel, and World Music categories have limited engagement data and are excluded from engagement-based analyses."
+  - Frame production characteristics appropriately: "We analyze production characteristics (BPM, loudness, gain) rather than perceptual audio features, as these are objective, reproducible metrics available across the WASABI corpus."
+
+---
+
+DELIVERABLES & STRUCTURE
+========================
+
+FINAL OUTPUTS YOU'LL PRODUCE:
+
+1. Matched dataset (CSV): Grammy + WASABI metadata (30–40% coverage)
+2. Enriched dataset (CSV): Grammy + WASABI + Last.fm (same 30–40%, all have engagement data where available)
+3. Knowledge graph (represented as nodes/edges CSV or RDF/JSON):
+   - Nodes: entities (categories, genres, artists, works, outcomes, etc.)
+   - Edges: relationships with properties (e.g., "nominated_in" edge has year, category, outcome properties)
+4. Analytical results for RQ1:
+   - (Category, Genre) cross-tabulation by decade
+   - Association strength metrics
+   - Heatmaps and temporal evolution visualizations
+5. Analytical results for RQ2:
+   - Category-stratified distributions (BPM, loudness, listeners, playcount, genre diversity)
+   - Statistical test results (Kruskal-Wallis, Mann-Whitney U)
+   - Summary tables: "Winners vs. Nominees: characteristic profiles per category"
+6. Analytical results for RQ3:
+   - Multi-category artist list with their characteristic profiles per category
+   - Classification of artists (Signature-consistent vs. Adaptive vs. Mixed)
+   - Visualizations of consistency patterns
+7. Final report + knowledge graph documentation:
+   - Schema definition (entities, relationships, properties)
+   - Query examples and results
+   - Findings for each RQ
+   - Limitations and future work
+
+---
+
+IMPLEMENTATION GUIDANCE
+=======================
+
+PHASE 1: DATA LOADING & NORMALIZATION (Week 1–2)
+  - Load Grammy CSV
+  - Load WASABI songs CSV (note: this is large, ~2.1M rows; consider chunking if memory is limited)
+  - Implement normalization function (lowercase, remove parentheticals, remove punctuation, collapse whitespace)
+  - Apply normalization to Grammy and WASABI records
+  - Filter Grammy to work-type records only
+
+PHASE 2: MATCHING (Week 2–3)
+  - Implement matching logic: for each Grammy work, search WASABI for (artist, title/album) matches
+  - Count matches, compute coverage percentage
+  - Output matched dataset
+  - Validate sample of matches manually (spot-check 10–20 matches to ensure they look correct)
+
+PHASE 3: LAST.FM ENRICHMENT (Week 3–4)
+  - Obtain Last.fm API key
+  - Implement Last.fm API querying function
+  - For each matched work, query track.getInfo() and extract listeners/playcount
+  - Handle API errors gracefully (some tracks might not be on Last.fm; return null)
+  - Output enriched dataset
+
+PHASE 4: KNOWLEDGE GRAPH CONSTRUCTION (Week 4–5)
+  - Define entity types and relationship types
+  - Convert enriched dataset into graph format (nodes + edges)
+  - Validate graph structure (check for orphaned nodes, missing relationships, etc.)
+
+PHASE 5: ANALYSIS & RQ ANSWERING (Week 5–8)
+  - RQ1: Genre-category association (cross-tabulation, statistical tests, visualizations)
+  - RQ2: Production/engagement profiles (stratified analysis per category, statistical comparisons)
+  - RQ3: Multi-category artist patterns (within-artist variance, classification)
+
+---
+
+KEY ASSUMPTIONS & CONSTRAINTS
+==============================
+
+Assumption 1: Last.fm API will work as documented
+  - Reality check: Last.fm API has been stable for 15+ years; low risk
+  - Mitigation: implement retry logic for failed API calls; cache results
+
+Assumption 2: WASABI artist and title names will match Grammy artist and title names after normalization
+  - Reality check: Some Grammy works will not be in WASABI (e.g., very new releases, classical pieces, traditional music)
+  - Mitigation: Accept 30–40% coverage as baseline; don't attempt fuzzy matching (would introduce noise)
+
+Assumption 3: Last.fm engagement metrics are reliable proxies for listener interest
+  - Reality check: Last.fm skews toward rock/indie communities; not representative of all genres
+  - Mitigation: Stratify analysis by category; explicitly note coverage gaps for each category
+
+Assumption 4: Production characteristics (BPM, loudness) are adequate proxies for sonic profile
+  - Reality check: These are only 2 of many possible audio features; limited expressiveness
+  - Mitigation: Acknowledge in methodology; frame as "production characteristics" not "sonic signatures"
