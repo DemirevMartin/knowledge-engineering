@@ -219,3 +219,6 @@ __marimo__/
 
 
 *.csv
+*.pkl
+*.ttl
+*.xlsx

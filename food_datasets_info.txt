@@ -1,0 +1,26 @@
+1. SU-EATABLE LIFE
+File:     SuEatableLife_Food_Fooprint_database.xlsx
+Sheet:    "SEL CF for users"
+Rows:     324
+Columns:  commodity_group, food_item, co2_kg_per_kg (PRIMARY), uncertainty
+
+2. Food.com
+File 1:   RAW_recipes.csv
+Rows:     231,637
+Columns:  id, name, ingredients (list), nutrition (7 values: calories, fat%, sugar%, sodium%, protein%, sat_fat%, carbs%)
+
+File 2:   RAW_interactions.csv
+Rows:     1,132,367 (1,071,520 valid, excluding 0-ratings)
+Columns:  user_id, recipe_id, rating (1-5), date, review
+
+3. USDA FoodData Central
+Directory 1: FoodData_Central_sr_legacy_food_csv_2018-04/
+  ├─ food.csv (descriptions)
+  └─ food_portion.csv (14,449 portion entries)
+
+Directory 2: FoodData_Central_foundation_food_csv_2026-04-30/
+  ├─ food.csv (descriptions)
+  └─ food_portion.csv (10,678 portion entries)
+
+Combined:   25,019 portion entries
+Columns:    fdc_id, description, gram_weight (PRIMARY), portion_description
