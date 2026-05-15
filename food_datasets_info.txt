@@ -1,26 +1,22 @@
-1. SU-EATABLE LIFE
-File:     SuEatableLife_Food_Fooprint_database.xlsx
-Sheet:    "SEL CF for users"
-Rows:     324
-Columns:  commodity_group, food_item, co2_kg_per_kg (PRIMARY), uncertainty
+1. Wolfram CO2
+ingr: CO2 values
 
-2. Food.com
-File 1:   RAW_recipes.csv
-Rows:     231,637
-Columns:  id, name, ingredients (list), nutrition (7 values: calories, fat%, sugar%, sodium%, protein%, sat_fat%, carbs%)
+2. Asian RAW_recipes
+recipe_ingredients.csv
+recipe_nutrition.csv
+recipes_master.csv
 
-File 2:   RAW_interactions.csv
-Rows:     1,132,367 (1,071,520 valid, excluding 0-ratings)
-Columns:  user_id, recipe_id, rating (1-5), date, review
 
 3. USDA FoodData Central
-Directory 1: FoodData_Central_sr_legacy_food_csv_2018-04/
-  ├─ food.csv (descriptions)
-  └─ food_portion.csv (14,449 portion entries)
-
-Directory 2: FoodData_Central_foundation_food_csv_2026-04-30/
+FoodData_Central_foundation_food_csv_2026-04-30/
   ├─ food.csv (descriptions)
   └─ food_portion.csv (10,678 portion entries)
 
-Combined:   25,019 portion entries
-Columns:    fdc_id, description, gram_weight (PRIMARY), portion_description
+
+The main concern is to what extent do the ingredients get mapped with the merged ingredients of 
+Wolfram and Asian, because there are a lot of entries for the same thing, e.g., beef. Should we take the average 
+of all, or take the most 'plain' name since the ingredients assume the 'cleanest' version of it? Or some other method
+for matching and mapping? We need to extract specifically what the present potions of a given product equal to
+in grams between the recipes and the USDA. Maybe match to that ingredient version that does have that specific
+measurement unit, so continue iteration until all (reasonable) are found. Do keep the names to which they have
+been matched.

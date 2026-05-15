@@ -6,12 +6,3 @@ Research questions:
 1. Which ingredients contribute most significantly to recipe-level carbon footprint ranges, and how frequently do these ingredients appear in the top-k highly rated recipes?
 2. What top-N co-occurring ingredient pairs and their average CO₂e contribution emerge among the top-k high-carbon recipes?
 3. Do recipes with higher estimated carbon footprints differ in their nutritional profile (calories, protein, fat, sugar) compared to low‑carbon recipes, and does this trade‑off between nutritional density and environmental impact relate to user engagement?
-Data Sources:
-1. Food Carbon Footprint - Greenhouse gas emissions during production of common foods
-a. URL: https://datarepository.wolframcloud.com/resources/Food-Carbon-Footprint/
-b. This dataset contains greenhouse gas emissions data (measured in carbon dioxide equivalents) for the production and processing of 538 foods, compiled from multiple reliable sources, which is why an interval range of CO₂e is given for each food, rather than a single value.
-c. The data has been preprocessed by the team to include the columns “Name”, “CO2_upper”, and “CO2_lower” to refer to the CO₂e intervals separately.
-2. Kaggle - Food.com Recipes
-a. URL: https://www.kaggle.com/datasets/shuyangli94/food-com-recipes-and-user-interactions (PP_recipes.csv, PP_users,csv, ingr_map.pkl)
-b. This dataset consists of 180K+ recipes and 700K+ recipe reviews covering 18 years of user interactions and uploads on Food.com (formerly GeniusKitchen).
-c. It includes detailed ingredient lists, providing real-world culinary data needed to see how ingredients are combined into meals.
