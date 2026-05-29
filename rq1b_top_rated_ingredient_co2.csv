@@ -1,0 +1,21 @@
+ingredient,recipe_count,avg_co2e_kg,total_co2e_kg
+beef,19,29.5073,560.6389
+mutton,12,10.905,130.86
+shrimp,21,7.4022,155.447
+paneer,23,7.2782,167.3988
+chicken,13,4.664,60.6314
+ghee,7,3.4944,24.461
+butter,15,3.3865,50.7976
+fish,17,3.2199,54.7388
+cream,11,1.5458,17.0034
+basmati rice,11,1.2859,14.145
+milk,11,0.9412,10.3532
+eggs,20,0.8616,17.2317
+tofu,13,0.557,7.2403
+yogurt,10,0.5376,5.3759
+semolina,20,0.5351,10.7027
+cauliflower,4,0.4547,1.8189
+chickpeas,23,0.4146,9.5353
+bell pepper,9,0.3702,3.332
+curry leaves,18,0.3577,6.4395
+tomato,12,0.3428,4.1131

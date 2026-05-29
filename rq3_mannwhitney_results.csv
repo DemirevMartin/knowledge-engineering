@@ -1,0 +1,9 @@
+variable,U_statistic,p_value,significant_at_0.05
+calories,12599404.5,0.4587,False
+protein_g,18992912.0,0.0,True
+fat_g,16092863.5,0.0,True
+sugar_g,12511535.5,0.8949,False
+fiber_g,12541469.5,0.7335,False
+carbohydrates_g,12330069.5,0.2602,False
+avg_rating,12606356.5,0.4291,False
+total_reviews,12464112.5,0.844,False
