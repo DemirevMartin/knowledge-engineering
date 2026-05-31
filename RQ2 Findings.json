@@ -1,0 +1,1817 @@
+[
+  {
+    "r": {
+      "identity": 4,
+      "labels": [
+        "Recipe"
+      ],
+      "properties": {
+        "sodium_mg": 1475.0,
+        "spice_level": "Mild",
+        "meal_type": "Dinner",
+        "cholesterol_mg": 55.0,
+        "is_traditional": false,
+        "fat_g": 16.0,
+        "prep_time_min": 42.0,
+        "is_festival_special": false,
+        "cook_time_min": 179.0,
+        "servings": 6.0,
+        "protein_g": 32.0,
+        "total_co2e": 12.9803,
+        "avg_rating": 4.9,
+        "carbon_tier": "high",
+        "carbohydrates_g": 33.0,
+        "is_vegan": false,
+        "is_halal": true,
+        "is_vegetarian": false,
+        "cuisine": "Pakistani",
+        "fiber_g": 3.0,
+        "is_gluten_free": false,
+        "calories": 277.0,
+        "cooking_method": "Grilled",
+        "difficulty": "Hard",
+        "date_added": "2024-08-10",
+        "total_time_min": 221.0,
+        "sugar_g": 6.0,
+        "recipe_id": "RCP00005",
+        "name": "Haleem",
+        "total_reviews": 4312.0,
+        "estimated_cost_usd": 13.48,
+        "category": "Main Course"
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:4"
+    },
+    "i1": {
+      "identity": 10025,
+      "labels": [
+        "Ingredient"
+      ],
+      "properties": {
+        "usda_tier": "generic",
+        "ingredient_name": "beef",
+        "co2_kg_per_kg": 59.85
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10025"
+    },
+    "i2": {
+      "identity": 10002,
+      "labels": [
+        "Ingredient"
+      ],
+      "properties": {
+        "usda_tier": "generic",
+        "ingredient_name": "onion",
+        "co2_kg_per_kg": 0.5
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10002"
+    },
+    "i3": {
+      "identity": 10003,
+      "labels": [
+        "Ingredient"
+      ],
+      "properties": {
+        "usda_tier": "generic",
+        "ingredient_name": "garlic",
+        "co2_kg_per_kg": 0.6
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10003"
+    },
+    "h1": {
+      "identity": 1164181603186900996,
+      "start": 4,
+      "end": 10025,
+      "type": "HAS_INGREDIENT",
+      "properties": {
+        "usda_tier": "sr_legacy",
+        "grams": 29.4,
+        "co2e_kg": 1.75959
+      },
+      "elementId": "5:50f3be16-fe5b-40ab-b788-324b7a68e254:1164181603186900996",
+      "startNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:4",
+      "endNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10025"
+    },
+    "h2": {
+      "identity": 1152922604118474756,
+      "start": 4,
+      "end": 10002,
+      "type": "HAS_INGREDIENT",
+      "properties": {
+        "usda_tier": "sr_legacy",
+        "grams": 210.0,
+        "co2e_kg": 0.105
+      },
+      "elementId": "5:50f3be16-fe5b-40ab-b788-324b7a68e254:1152922604118474756",
+      "startNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:4",
+      "endNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10002"
+    },
+    "h3": {
+      "identity": 1155174403932160004,
+      "start": 4,
+      "end": 10003,
+      "type": "HAS_INGREDIENT",
+      "properties": {
+        "usda_tier": "sr_legacy",
+        "grams": 48.0,
+        "co2e_kg": 0.0288
+      },
+      "elementId": "5:50f3be16-fe5b-40ab-b788-324b7a68e254:1155174403932160004",
+      "startNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:4",
+      "endNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10003"
+    }
+  },
+  {
+    "r": {
+      "identity": 5,
+      "labels": [
+        "Recipe"
+      ],
+      "properties": {
+        "sodium_mg": 430.0,
+        "spice_level": "Mild",
+        "meal_type": "Dinner",
+        "cholesterol_mg": 55.0,
+        "is_traditional": true,
+        "fat_g": 37.0,
+        "prep_time_min": 59.0,
+        "is_festival_special": false,
+        "cook_time_min": 131.0,
+        "servings": 7.0,
+        "protein_g": 24.0,
+        "total_co2e": 20.8838,
+        "avg_rating": 3.5,
+        "carbon_tier": "high",
+        "carbohydrates_g": 48.0,
+        "is_vegan": false,
+        "is_halal": true,
+        "is_vegetarian": false,
+        "cuisine": "Pakistani",
+        "fiber_g": 6.0,
+        "is_gluten_free": false,
+        "calories": 750.0,
+        "cooking_method": "Steamed",
+        "difficulty": "Hard",
+        "date_added": "2025-01-02",
+        "total_time_min": 190.0,
+        "sugar_g": 9.0,
+        "recipe_id": "RCP00006",
+        "name": "Sajji",
+        "total_reviews": 3372.0,
+        "estimated_cost_usd": 10.44,
+        "category": "Main Course"
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:5"
+    },
+    "i1": {
+      "identity": 10025,
+      "labels": [
+        "Ingredient"
+      ],
+      "properties": {
+        "usda_tier": "generic",
+        "ingredient_name": "beef",
+        "co2_kg_per_kg": 59.85
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10025"
+    },
+    "i2": {
+      "identity": 10002,
+      "labels": [
+        "Ingredient"
+      ],
+      "properties": {
+        "usda_tier": "generic",
+        "ingredient_name": "onion",
+        "co2_kg_per_kg": 0.5
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10002"
+    },
+    "i3": {
+      "identity": 10003,
+      "labels": [
+        "Ingredient"
+      ],
+      "properties": {
+        "usda_tier": "generic",
+        "ingredient_name": "garlic",
+        "co2_kg_per_kg": 0.6
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10003"
+    },
+    "h1": {
+      "identity": 1164181603186900997,
+      "start": 5,
+      "end": 10025,
+      "type": "HAS_INGREDIENT",
+      "properties": {
+        "usda_tier": "sr_legacy",
+        "grams": 44.1,
+        "co2e_kg": 2.639385
+      },
+      "elementId": "5:50f3be16-fe5b-40ab-b788-324b7a68e254:1164181603186900997",
+      "startNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:5",
+      "endNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10025"
+    },
+    "h2": {
+      "identity": 1152922604118474757,
+      "start": 5,
+      "end": 10002,
+      "type": "HAS_INGREDIENT",
+      "properties": {
+        "usda_tier": "sr_legacy",
+        "grams": 315.0,
+        "co2e_kg": 0.1575
+      },
+      "elementId": "5:50f3be16-fe5b-40ab-b788-324b7a68e254:1152922604118474757",
+      "startNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:5",
+      "endNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10002"
+    },
+    "h3": {
+      "identity": 1155174403932160005,
+      "start": 5,
+      "end": 10003,
+      "type": "HAS_INGREDIENT",
+      "properties": {
+        "usda_tier": "sr_legacy",
+        "grams": 42.0,
+        "co2e_kg": 0.0251999999999999
+      },
+      "elementId": "5:50f3be16-fe5b-40ab-b788-324b7a68e254:1155174403932160005",
+      "startNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:5",
+      "endNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10003"
+    }
+  },
+  {
+    "r": {
+      "identity": 15,
+      "labels": [
+        "Recipe"
+      ],
+      "properties": {
+        "sodium_mg": 382.0,
+        "spice_level": "Medium",
+        "meal_type": "Beverage",
+        "cholesterol_mg": 65.0,
+        "is_traditional": false,
+        "fat_g": 19.0,
+        "prep_time_min": 20.0,
+        "is_festival_special": false,
+        "cook_time_min": 131.0,
+        "servings": 4.0,
+        "protein_g": 33.0,
+        "total_co2e": 58.3192,
+        "avg_rating": 4.9,
+        "carbon_tier": "high",
+        "carbohydrates_g": 34.0,
+        "is_vegan": false,
+        "is_halal": true,
+        "is_vegetarian": false,
+        "cuisine": "Pakistani",
+        "fiber_g": 10.0,
+        "is_gluten_free": false,
+        "calories": 304.0,
+        "cooking_method": "Fried",
+        "difficulty": "Easy",
+        "date_added": "2025-09-05",
+        "total_time_min": 151.0,
+        "sugar_g": 13.0,
+        "recipe_id": "RCP00016",
+        "name": "Chicken Tikka",
+        "total_reviews": 1712.0,
+        "estimated_cost_usd": 3.18,
+        "category": "Main Course"
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:15"
+    },
+    "i1": {
+      "identity": 10025,
+      "labels": [
+        "Ingredient"
+      ],
+      "properties": {
+        "usda_tier": "generic",
+        "ingredient_name": "beef",
+        "co2_kg_per_kg": 59.85
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10025"
+    },
+    "i2": {
+      "identity": 10002,
+      "labels": [
+        "Ingredient"
+      ],
+      "properties": {
+        "usda_tier": "generic",
+        "ingredient_name": "onion",
+        "co2_kg_per_kg": 0.5
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10002"
+    },
+    "i3": {
+      "identity": 10003,
+      "labels": [
+        "Ingredient"
+      ],
+      "properties": {
+        "usda_tier": "generic",
+        "ingredient_name": "garlic",
+        "co2_kg_per_kg": 0.6
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10003"
+    },
+    "h1": {
+      "identity": 1159678003559530511,
+      "start": 15,
+      "end": 10025,
+      "type": "HAS_INGREDIENT",
+      "properties": {
+        "usda_tier": "generic",
+        "grams": 964.0,
+        "co2e_kg": 57.6954
+      },
+      "elementId": "5:50f3be16-fe5b-40ab-b788-324b7a68e254:1159678003559530511",
+      "startNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:15",
+      "endNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10025"
+    },
+    "h2": {
+      "identity": 1152922604118474767,
+      "start": 15,
+      "end": 10002,
+      "type": "HAS_INGREDIENT",
+      "properties": {
+        "usda_tier": "sr_legacy",
+        "grams": 315.0,
+        "co2e_kg": 0.1575
+      },
+      "elementId": "5:50f3be16-fe5b-40ab-b788-324b7a68e254:1152922604118474767",
+      "startNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:15",
+      "endNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10002"
+    },
+    "h3": {
+      "identity": 1155174403932160015,
+      "start": 15,
+      "end": 10003,
+      "type": "HAS_INGREDIENT",
+      "properties": {
+        "usda_tier": "generic",
+        "grams": 100.0,
+        "co2e_kg": 0.06
+      },
+      "elementId": "5:50f3be16-fe5b-40ab-b788-324b7a68e254:1155174403932160015",
+      "startNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:15",
+      "endNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10003"
+    }
+  },
+  {
+    "r": {
+      "identity": 20,
+      "labels": [
+        "Recipe"
+      ],
+      "properties": {
+        "sodium_mg": 1383.0,
+        "spice_level": "Hot",
+        "meal_type": "Beverage",
+        "cholesterol_mg": 71.0,
+        "is_traditional": false,
+        "fat_g": 16.0,
+        "prep_time_min": 36.0,
+        "is_festival_special": true,
+        "cook_time_min": 28.0,
+        "servings": 5.0,
+        "protein_g": 20.0,
+        "total_co2e": 51.2876,
+        "avg_rating": 4.6,
+        "carbon_tier": "high",
+        "carbohydrates_g": 33.0,
+        "is_vegan": false,
+        "is_halal": true,
+        "is_vegetarian": false,
+        "cuisine": "Pakistani",
+        "fiber_g": 6.0,
+        "is_gluten_free": false,
+        "calories": 447.0,
+        "cooking_method": "Pressure-cooked",
+        "difficulty": "Easy",
+        "date_added": "2025-06-05",
+        "total_time_min": 64.0,
+        "sugar_g": 6.0,
+        "recipe_id": "RCP00021",
+        "name": "Paya",
+        "total_reviews": 1279.0,
+        "estimated_cost_usd": 3.43,
+        "category": "Main Course"
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:20"
+    },
+    "i1": {
+      "identity": 10025,
+      "labels": [
+        "Ingredient"
+      ],
+      "properties": {
+        "usda_tier": "generic",
+        "ingredient_name": "beef",
+        "co2_kg_per_kg": 59.85
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10025"
+    },
+    "i2": {
+      "identity": 10002,
+      "labels": [
+        "Ingredient"
+      ],
+      "properties": {
+        "usda_tier": "generic",
+        "ingredient_name": "onion",
+        "co2_kg_per_kg": 0.5
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10002"
+    },
+    "i3": {
+      "identity": 10003,
+      "labels": [
+        "Ingredient"
+      ],
+      "properties": {
+        "usda_tier": "generic",
+        "ingredient_name": "garlic",
+        "co2_kg_per_kg": 0.6
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10003"
+    },
+    "h1": {
+      "identity": 1159678003559530516,
+      "start": 20,
+      "end": 10025,
+      "type": "HAS_INGREDIENT",
+      "properties": {
+        "usda_tier": "generic",
+        "grams": 689.0,
+        "co2e_kg": 41.23665
+      },
+      "elementId": "5:50f3be16-fe5b-40ab-b788-324b7a68e254:1159678003559530516",
+      "startNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:20",
+      "endNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10025"
+    },
+    "h2": {
+      "identity": 1152922604118474772,
+      "start": 20,
+      "end": 10002,
+      "type": "HAS_INGREDIENT",
+      "properties": {
+        "usda_tier": "sr_legacy",
+        "grams": 315.0,
+        "co2e_kg": 0.1575
+      },
+      "elementId": "5:50f3be16-fe5b-40ab-b788-324b7a68e254:1152922604118474772",
+      "startNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:20",
+      "endNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10002"
+    },
+    "h3": {
+      "identity": 1155174403932160020,
+      "start": 20,
+      "end": 10003,
+      "type": "HAS_INGREDIENT",
+      "properties": {
+        "usda_tier": "sr_legacy",
+        "grams": 36.0,
+        "co2e_kg": 0.0215999999999999
+      },
+      "elementId": "5:50f3be16-fe5b-40ab-b788-324b7a68e254:1155174403932160020",
+      "startNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:20",
+      "endNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10003"
+    }
+  },
+  {
+    "r": {
+      "identity": 21,
+      "labels": [
+        "Recipe"
+      ],
+      "properties": {
+        "sodium_mg": 1320.0,
+        "spice_level": "Hot",
+        "meal_type": "Lunch",
+        "cholesterol_mg": 4.0,
+        "is_traditional": false,
+        "fat_g": 24.0,
+        "prep_time_min": 40.0,
+        "is_festival_special": true,
+        "cook_time_min": 112.0,
+        "servings": 4.0,
+        "protein_g": 21.0,
+        "total_co2e": 2.6238,
+        "avg_rating": 4.1,
+        "carbon_tier": "medium",
+        "carbohydrates_g": 47.0,
+        "is_vegan": false,
+        "is_halal": true,
+        "is_vegetarian": false,
+        "cuisine": "Pakistani",
+        "fiber_g": 12.0,
+        "is_gluten_free": false,
+        "calories": 494.0,
+        "cooking_method": "Boiled",
+        "difficulty": "Easy",
+        "date_added": "2025-12-10",
+        "total_time_min": 152.0,
+        "sugar_g": 11.0,
+        "recipe_id": "RCP00022",
+        "name": "Karahi",
+        "total_reviews": 493.0,
+        "estimated_cost_usd": 4.16,
+        "category": "Main Course"
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:21"
+    },
+    "i1": {
+      "identity": 10025,
+      "labels": [
+        "Ingredient"
+      ],
+      "properties": {
+        "usda_tier": "generic",
+        "ingredient_name": "beef",
+        "co2_kg_per_kg": 59.85
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10025"
+    },
+    "i2": {
+      "identity": 10002,
+      "labels": [
+        "Ingredient"
+      ],
+      "properties": {
+        "usda_tier": "generic",
+        "ingredient_name": "onion",
+        "co2_kg_per_kg": 0.5
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10002"
+    },
+    "i3": {
+      "identity": 10003,
+      "labels": [
+        "Ingredient"
+      ],
+      "properties": {
+        "usda_tier": "generic",
+        "ingredient_name": "garlic",
+        "co2_kg_per_kg": 0.6
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10003"
+    },
+    "h1": {
+      "identity": 1159678003559530517,
+      "start": 21,
+      "end": 10025,
+      "type": "HAS_INGREDIENT",
+      "properties": {
+        "usda_tier": "sr_legacy",
+        "grams": 29.4,
+        "co2e_kg": 1.75959
+      },
+      "elementId": "5:50f3be16-fe5b-40ab-b788-324b7a68e254:1159678003559530517",
+      "startNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:21",
+      "endNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10025"
+    },
+    "h2": {
+      "identity": 1152922604118474773,
+      "start": 21,
+      "end": 10002,
+      "type": "HAS_INGREDIENT",
+      "properties": {
+        "usda_tier": "sr_legacy",
+        "grams": 105.0,
+        "co2e_kg": 0.0525
+      },
+      "elementId": "5:50f3be16-fe5b-40ab-b788-324b7a68e254:1152922604118474773",
+      "startNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:21",
+      "endNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10002"
+    },
+    "h3": {
+      "identity": 1155174403932160021,
+      "start": 21,
+      "end": 10003,
+      "type": "HAS_INGREDIENT",
+      "properties": {
+        "usda_tier": "sr_legacy",
+        "grams": 54.0,
+        "co2e_kg": 0.0324
+      },
+      "elementId": "5:50f3be16-fe5b-40ab-b788-324b7a68e254:1155174403932160021",
+      "startNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:21",
+      "endNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10003"
+    }
+  },
+  {
+    "r": {
+      "identity": 23,
+      "labels": [
+        "Recipe"
+      ],
+      "properties": {
+        "sodium_mg": 235.0,
+        "spice_level": "Hot",
+        "meal_type": "Snack",
+        "cholesterol_mg": 98.0,
+        "is_traditional": false,
+        "fat_g": 12.0,
+        "prep_time_min": 14.0,
+        "is_festival_special": false,
+        "cook_time_min": 108.0,
+        "servings": 3.0,
+        "protein_g": 15.0,
+        "total_co2e": 4.1913,
+        "avg_rating": 4.7,
+        "carbon_tier": "medium",
+        "carbohydrates_g": 39.0,
+        "is_vegan": false,
+        "is_halal": true,
+        "is_vegetarian": true,
+        "cuisine": "Pakistani",
+        "fiber_g": 2.0,
+        "is_gluten_free": true,
+        "calories": 624.0,
+        "cooking_method": "Baked",
+        "difficulty": "Medium",
+        "date_added": "2023-08-30",
+        "total_time_min": 122.0,
+        "sugar_g": 17.0,
+        "recipe_id": "RCP00024",
+        "name": "Karahi",
+        "total_reviews": 3804.0,
+        "estimated_cost_usd": 21.65,
+        "category": "Main Course"
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:23"
+    },
+    "i1": {
+      "identity": 10025,
+      "labels": [
+        "Ingredient"
+      ],
+      "properties": {
+        "usda_tier": "generic",
+        "ingredient_name": "beef",
+        "co2_kg_per_kg": 59.85
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10025"
+    },
+    "i2": {
+      "identity": 10002,
+      "labels": [
+        "Ingredient"
+      ],
+      "properties": {
+        "usda_tier": "generic",
+        "ingredient_name": "onion",
+        "co2_kg_per_kg": 0.5
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10002"
+    },
+    "i3": {
+      "identity": 10003,
+      "labels": [
+        "Ingredient"
+      ],
+      "properties": {
+        "usda_tier": "generic",
+        "ingredient_name": "garlic",
+        "co2_kg_per_kg": 0.6
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10003"
+    },
+    "h1": {
+      "identity": 1161929803373215767,
+      "start": 23,
+      "end": 10025,
+      "type": "HAS_INGREDIENT",
+      "properties": {
+        "usda_tier": "sr_legacy",
+        "grams": 58.8,
+        "co2e_kg": 3.51918
+      },
+      "elementId": "5:50f3be16-fe5b-40ab-b788-324b7a68e254:1161929803373215767",
+      "startNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:23",
+      "endNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10025"
+    },
+    "h2": {
+      "identity": 1152922604118474775,
+      "start": 23,
+      "end": 10002,
+      "type": "HAS_INGREDIENT",
+      "properties": {
+        "usda_tier": "sr_legacy",
+        "grams": 210.0,
+        "co2e_kg": 0.105
+      },
+      "elementId": "5:50f3be16-fe5b-40ab-b788-324b7a68e254:1152922604118474775",
+      "startNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:23",
+      "endNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10002"
+    },
+    "h3": {
+      "identity": 1155174403932160023,
+      "start": 23,
+      "end": 10003,
+      "type": "HAS_INGREDIENT",
+      "properties": {
+        "usda_tier": "sr_legacy",
+        "grams": 18.0,
+        "co2e_kg": 0.0107999999999999
+      },
+      "elementId": "5:50f3be16-fe5b-40ab-b788-324b7a68e254:1155174403932160023",
+      "startNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:23",
+      "endNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10003"
+    }
+  },
+  {
+    "r": {
+      "identity": 42,
+      "labels": [
+        "Recipe"
+      ],
+      "properties": {
+        "sodium_mg": 1347.0,
+        "spice_level": "Medium",
+        "meal_type": "Lunch",
+        "cholesterol_mg": 43.0,
+        "is_traditional": true,
+        "fat_g": 18.0,
+        "prep_time_min": 46.0,
+        "is_festival_special": false,
+        "cook_time_min": 53.0,
+        "servings": 2.0,
+        "protein_g": 44.0,
+        "total_co2e": 13.902,
+        "avg_rating": 4.4,
+        "carbon_tier": "high",
+        "carbohydrates_g": 70.0,
+        "is_vegan": false,
+        "is_halal": true,
+        "is_vegetarian": false,
+        "cuisine": "Pakistani",
+        "fiber_g": 9.0,
+        "is_gluten_free": false,
+        "calories": 328.0,
+        "cooking_method": "Pressure-cooked",
+        "difficulty": "Hard",
+        "date_added": "2025-11-12",
+        "total_time_min": 99.0,
+        "sugar_g": 9.0,
+        "recipe_id": "RCP00043",
+        "name": "Sajji",
+        "total_reviews": 3609.0,
+        "estimated_cost_usd": 22.94,
+        "category": "Main Course"
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:42"
+    },
+    "i1": {
+      "identity": 10025,
+      "labels": [
+        "Ingredient"
+      ],
+      "properties": {
+        "usda_tier": "generic",
+        "ingredient_name": "beef",
+        "co2_kg_per_kg": 59.85
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10025"
+    },
+    "i2": {
+      "identity": 10002,
+      "labels": [
+        "Ingredient"
+      ],
+      "properties": {
+        "usda_tier": "generic",
+        "ingredient_name": "onion",
+        "co2_kg_per_kg": 0.5
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10002"
+    },
+    "i3": {
+      "identity": 10003,
+      "labels": [
+        "Ingredient"
+      ],
+      "properties": {
+        "usda_tier": "generic",
+        "ingredient_name": "garlic",
+        "co2_kg_per_kg": 0.6
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10003"
+    },
+    "h1": {
+      "identity": 1166433403000586282,
+      "start": 42,
+      "end": 10025,
+      "type": "HAS_INGREDIENT",
+      "properties": {
+        "usda_tier": "sr_legacy",
+        "grams": 29.4,
+        "co2e_kg": 1.75959
+      },
+      "elementId": "5:50f3be16-fe5b-40ab-b788-324b7a68e254:1166433403000586282",
+      "startNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:42",
+      "endNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10025"
+    },
+    "h2": {
+      "identity": 1152922604118474794,
+      "start": 42,
+      "end": 10002,
+      "type": "HAS_INGREDIENT",
+      "properties": {
+        "usda_tier": "sr_legacy",
+        "grams": 210.0,
+        "co2e_kg": 0.105
+      },
+      "elementId": "5:50f3be16-fe5b-40ab-b788-324b7a68e254:1152922604118474794",
+      "startNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:42",
+      "endNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10002"
+    },
+    "h3": {
+      "identity": 1155174403932160042,
+      "start": 42,
+      "end": 10003,
+      "type": "HAS_INGREDIENT",
+      "properties": {
+        "usda_tier": "sr_legacy",
+        "grams": 30.0,
+        "co2e_kg": 0.018
+      },
+      "elementId": "5:50f3be16-fe5b-40ab-b788-324b7a68e254:1155174403932160042",
+      "startNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:42",
+      "endNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10003"
+    }
+  },
+  {
+    "r": {
+      "identity": 45,
+      "labels": [
+        "Recipe"
+      ],
+      "properties": {
+        "sodium_mg": 426.0,
+        "spice_level": "Medium",
+        "meal_type": "Beverage",
+        "cholesterol_mg": 0.0,
+        "is_traditional": true,
+        "fat_g": 28.0,
+        "prep_time_min": 15.0,
+        "is_festival_special": false,
+        "cook_time_min": 83.0,
+        "servings": 7.0,
+        "protein_g": 30.0,
+        "total_co2e": 19.33,
+        "avg_rating": 3.9,
+        "carbon_tier": "high",
+        "carbohydrates_g": 54.0,
+        "is_vegan": true,
+        "is_halal": true,
+        "is_vegetarian": false,
+        "cuisine": "Pakistani",
+        "fiber_g": 14.0,
+        "is_gluten_free": false,
+        "calories": 264.0,
+        "cooking_method": "Boiled",
+        "difficulty": "Hard",
+        "date_added": "2023-04-15",
+        "total_time_min": 98.0,
+        "sugar_g": 15.0,
+        "recipe_id": "RCP00046",
+        "name": "Pakistani Main Course Special 46",
+        "total_reviews": 4765.0,
+        "estimated_cost_usd": 6.16,
+        "category": "Main Course"
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:45"
+    },
+    "i1": {
+      "identity": 10025,
+      "labels": [
+        "Ingredient"
+      ],
+      "properties": {
+        "usda_tier": "generic",
+        "ingredient_name": "beef",
+        "co2_kg_per_kg": 59.85
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10025"
+    },
+    "i2": {
+      "identity": 10002,
+      "labels": [
+        "Ingredient"
+      ],
+      "properties": {
+        "usda_tier": "generic",
+        "ingredient_name": "onion",
+        "co2_kg_per_kg": 0.5
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10002"
+    },
+    "i3": {
+      "identity": 10003,
+      "labels": [
+        "Ingredient"
+      ],
+      "properties": {
+        "usda_tier": "generic",
+        "ingredient_name": "garlic",
+        "co2_kg_per_kg": 0.6
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10003"
+    },
+    "h1": {
+      "identity": 1164181603186901037,
+      "start": 45,
+      "end": 10025,
+      "type": "HAS_INGREDIENT",
+      "properties": {
+        "usda_tier": "sr_legacy",
+        "grams": 44.1,
+        "co2e_kg": 2.639385
+      },
+      "elementId": "5:50f3be16-fe5b-40ab-b788-324b7a68e254:1164181603186901037",
+      "startNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:45",
+      "endNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10025"
+    },
+    "h2": {
+      "identity": 1152922604118474797,
+      "start": 45,
+      "end": 10002,
+      "type": "HAS_INGREDIENT",
+      "properties": {
+        "usda_tier": "sr_legacy",
+        "grams": 315.0,
+        "co2e_kg": 0.1575
+      },
+      "elementId": "5:50f3be16-fe5b-40ab-b788-324b7a68e254:1152922604118474797",
+      "startNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:45",
+      "endNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10002"
+    },
+    "h3": {
+      "identity": 1155174403932160045,
+      "start": 45,
+      "end": 10003,
+      "type": "HAS_INGREDIENT",
+      "properties": {
+        "usda_tier": "sr_legacy",
+        "grams": 18.0,
+        "co2e_kg": 0.0107999999999999
+      },
+      "elementId": "5:50f3be16-fe5b-40ab-b788-324b7a68e254:1155174403932160045",
+      "startNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:45",
+      "endNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10003"
+    }
+  },
+  {
+    "r": {
+      "identity": 49,
+      "labels": [
+        "Recipe"
+      ],
+      "properties": {
+        "sodium_mg": 563.0,
+        "spice_level": "Medium",
+        "meal_type": "Lunch",
+        "cholesterol_mg": 72.0,
+        "is_traditional": true,
+        "fat_g": 25.0,
+        "prep_time_min": 13.0,
+        "is_festival_special": false,
+        "cook_time_min": 35.0,
+        "servings": 7.0,
+        "protein_g": 40.0,
+        "total_co2e": 4.1607,
+        "avg_rating": 4.1,
+        "carbon_tier": "medium",
+        "carbohydrates_g": 65.0,
+        "is_vegan": false,
+        "is_halal": true,
+        "is_vegetarian": false,
+        "cuisine": "Pakistani",
+        "fiber_g": 6.0,
+        "is_gluten_free": false,
+        "calories": 694.0,
+        "cooking_method": "Fried",
+        "difficulty": "Hard",
+        "date_added": "2024-05-29",
+        "total_time_min": 48.0,
+        "sugar_g": 16.0,
+        "recipe_id": "RCP00050",
+        "name": "Pakistani Main Course Special 50",
+        "total_reviews": 2532.0,
+        "estimated_cost_usd": 21.41,
+        "category": "Main Course"
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:49"
+    },
+    "i1": {
+      "identity": 10025,
+      "labels": [
+        "Ingredient"
+      ],
+      "properties": {
+        "usda_tier": "generic",
+        "ingredient_name": "beef",
+        "co2_kg_per_kg": 59.85
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10025"
+    },
+    "i2": {
+      "identity": 10002,
+      "labels": [
+        "Ingredient"
+      ],
+      "properties": {
+        "usda_tier": "generic",
+        "ingredient_name": "onion",
+        "co2_kg_per_kg": 0.5
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10002"
+    },
+    "i3": {
+      "identity": 10003,
+      "labels": [
+        "Ingredient"
+      ],
+      "properties": {
+        "usda_tier": "generic",
+        "ingredient_name": "garlic",
+        "co2_kg_per_kg": 0.6
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10003"
+    },
+    "h1": {
+      "identity": 1159678003559530545,
+      "start": 49,
+      "end": 10025,
+      "type": "HAS_INGREDIENT",
+      "properties": {
+        "usda_tier": "sr_legacy",
+        "grams": 44.1,
+        "co2e_kg": 2.639385
+      },
+      "elementId": "5:50f3be16-fe5b-40ab-b788-324b7a68e254:1159678003559530545",
+      "startNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:49",
+      "endNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10025"
+    },
+    "h2": {
+      "identity": 1152922604118474801,
+      "start": 49,
+      "end": 10002,
+      "type": "HAS_INGREDIENT",
+      "properties": {
+        "usda_tier": "sr_legacy",
+        "grams": 105.0,
+        "co2e_kg": 0.0525
+      },
+      "elementId": "5:50f3be16-fe5b-40ab-b788-324b7a68e254:1152922604118474801",
+      "startNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:49",
+      "endNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10002"
+    },
+    "h3": {
+      "identity": 1155174403932160049,
+      "start": 49,
+      "end": 10003,
+      "type": "HAS_INGREDIENT",
+      "properties": {
+        "usda_tier": "sr_legacy",
+        "grams": 30.0,
+        "co2e_kg": 0.018
+      },
+      "elementId": "5:50f3be16-fe5b-40ab-b788-324b7a68e254:1155174403932160049",
+      "startNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:49",
+      "endNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10003"
+    }
+  },
+  {
+    "r": {
+      "identity": 63,
+      "labels": [
+        "Recipe"
+      ],
+      "properties": {
+        "sodium_mg": 397.0,
+        "spice_level": "Mild",
+        "meal_type": "Lunch",
+        "cholesterol_mg": 79.0,
+        "is_traditional": false,
+        "fat_g": 34.0,
+        "prep_time_min": 23.0,
+        "is_festival_special": false,
+        "cook_time_min": 59.0,
+        "servings": 7.0,
+        "protein_g": 47.0,
+        "total_co2e": 49.1979,
+        "avg_rating": 4.7,
+        "carbon_tier": "high",
+        "carbohydrates_g": 52.0,
+        "is_vegan": false,
+        "is_halal": true,
+        "is_vegetarian": false,
+        "cuisine": "Pakistani",
+        "fiber_g": 2.0,
+        "is_gluten_free": false,
+        "calories": 718.0,
+        "cooking_method": "Slow-cooked",
+        "difficulty": "Easy",
+        "date_added": "2023-11-12",
+        "total_time_min": 82.0,
+        "sugar_g": 6.0,
+        "recipe_id": "RCP00064",
+        "name": "Pakistani Main Course Special 64",
+        "total_reviews": 1096.0,
+        "estimated_cost_usd": 18.78,
+        "category": "Main Course"
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:63"
+    },
+    "i1": {
+      "identity": 10025,
+      "labels": [
+        "Ingredient"
+      ],
+      "properties": {
+        "usda_tier": "generic",
+        "ingredient_name": "beef",
+        "co2_kg_per_kg": 59.85
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10025"
+    },
+    "i2": {
+      "identity": 10002,
+      "labels": [
+        "Ingredient"
+      ],
+      "properties": {
+        "usda_tier": "generic",
+        "ingredient_name": "onion",
+        "co2_kg_per_kg": 0.5
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10002"
+    },
+    "i3": {
+      "identity": 10003,
+      "labels": [
+        "Ingredient"
+      ],
+      "properties": {
+        "usda_tier": "generic",
+        "ingredient_name": "garlic",
+        "co2_kg_per_kg": 0.6
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10003"
+    },
+    "h1": {
+      "identity": 1159678003559530559,
+      "start": 63,
+      "end": 10025,
+      "type": "HAS_INGREDIENT",
+      "properties": {
+        "usda_tier": "generic",
+        "grams": 819.0,
+        "co2e_kg": 49.01715
+      },
+      "elementId": "5:50f3be16-fe5b-40ab-b788-324b7a68e254:1159678003559530559",
+      "startNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:63",
+      "endNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10025"
+    },
+    "h2": {
+      "identity": 1152922604118474815,
+      "start": 63,
+      "end": 10002,
+      "type": "HAS_INGREDIENT",
+      "properties": {
+        "usda_tier": "sr_legacy",
+        "grams": 210.0,
+        "co2e_kg": 0.105
+      },
+      "elementId": "5:50f3be16-fe5b-40ab-b788-324b7a68e254:1152922604118474815",
+      "startNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:63",
+      "endNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10002"
+    },
+    "h3": {
+      "identity": 1155174403932160063,
+      "start": 63,
+      "end": 10003,
+      "type": "HAS_INGREDIENT",
+      "properties": {
+        "usda_tier": "sr_legacy",
+        "grams": 30.0,
+        "co2e_kg": 0.018
+      },
+      "elementId": "5:50f3be16-fe5b-40ab-b788-324b7a68e254:1155174403932160063",
+      "startNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:63",
+      "endNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10003"
+    }
+  },
+  {
+    "r": {
+      "identity": 77,
+      "labels": [
+        "Recipe"
+      ],
+      "properties": {
+        "sodium_mg": 1061.0,
+        "spice_level": "Hot",
+        "meal_type": "Dessert",
+        "cholesterol_mg": 44.0,
+        "is_traditional": true,
+        "fat_g": 19.0,
+        "prep_time_min": 21.0,
+        "is_festival_special": false,
+        "cook_time_min": 111.0,
+        "servings": 4.0,
+        "protein_g": 49.0,
+        "total_co2e": 50.3546,
+        "avg_rating": 4.9,
+        "carbon_tier": "high",
+        "carbohydrates_g": 34.0,
+        "is_vegan": false,
+        "is_halal": true,
+        "is_vegetarian": false,
+        "cuisine": "Pakistani",
+        "fiber_g": 14.0,
+        "is_gluten_free": false,
+        "calories": 750.0,
+        "cooking_method": "Pressure-cooked",
+        "difficulty": "Medium",
+        "date_added": "2025-02-15",
+        "total_time_min": 132.0,
+        "sugar_g": 11.0,
+        "recipe_id": "RCP00078",
+        "name": "Palak Paneer",
+        "total_reviews": 1371.0,
+        "estimated_cost_usd": 7.87,
+        "category": "Main Course"
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:77"
+    },
+    "i1": {
+      "identity": 10025,
+      "labels": [
+        "Ingredient"
+      ],
+      "properties": {
+        "usda_tier": "generic",
+        "ingredient_name": "beef",
+        "co2_kg_per_kg": 59.85
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10025"
+    },
+    "i2": {
+      "identity": 10002,
+      "labels": [
+        "Ingredient"
+      ],
+      "properties": {
+        "usda_tier": "generic",
+        "ingredient_name": "onion",
+        "co2_kg_per_kg": 0.5
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10002"
+    },
+    "i3": {
+      "identity": 10003,
+      "labels": [
+        "Ingredient"
+      ],
+      "properties": {
+        "usda_tier": "generic",
+        "ingredient_name": "garlic",
+        "co2_kg_per_kg": 0.6
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10003"
+    },
+    "h1": {
+      "identity": 1159678003559530573,
+      "start": 77,
+      "end": 10025,
+      "type": "HAS_INGREDIENT",
+      "properties": {
+        "usda_tier": "generic",
+        "grams": 819.0,
+        "co2e_kg": 49.01715
+      },
+      "elementId": "5:50f3be16-fe5b-40ab-b788-324b7a68e254:1159678003559530573",
+      "startNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:77",
+      "endNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10025"
+    },
+    "h2": {
+      "identity": 1152922604118474829,
+      "start": 77,
+      "end": 10002,
+      "type": "HAS_INGREDIENT",
+      "properties": {
+        "usda_tier": "sr_legacy",
+        "grams": 210.0,
+        "co2e_kg": 0.105
+      },
+      "elementId": "5:50f3be16-fe5b-40ab-b788-324b7a68e254:1152922604118474829",
+      "startNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:77",
+      "endNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10002"
+    },
+    "h3": {
+      "identity": 1155174403932160077,
+      "start": 77,
+      "end": 10003,
+      "type": "HAS_INGREDIENT",
+      "properties": {
+        "usda_tier": "sr_legacy",
+        "grams": 36.0,
+        "co2e_kg": 0.0215999999999999
+      },
+      "elementId": "5:50f3be16-fe5b-40ab-b788-324b7a68e254:1155174403932160077",
+      "startNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:77",
+      "endNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10003"
+    }
+  },
+  {
+    "r": {
+      "identity": 91,
+      "labels": [
+        "Recipe"
+      ],
+      "properties": {
+        "sodium_mg": 303.0,
+        "spice_level": "Medium",
+        "meal_type": "Dinner",
+        "cholesterol_mg": 21.0,
+        "is_traditional": false,
+        "fat_g": 20.0,
+        "prep_time_min": 12.0,
+        "is_festival_special": false,
+        "cook_time_min": 16.0,
+        "servings": 7.0,
+        "protein_g": 12.0,
+        "total_co2e": 5.1397,
+        "avg_rating": 4.6,
+        "carbon_tier": "medium",
+        "carbohydrates_g": 41.0,
+        "is_vegan": false,
+        "is_halal": true,
+        "is_vegetarian": true,
+        "cuisine": "Pakistani",
+        "fiber_g": 6.0,
+        "is_gluten_free": false,
+        "calories": 351.0,
+        "cooking_method": "Baked",
+        "difficulty": "Medium",
+        "date_added": "2025-12-31",
+        "total_time_min": 28.0,
+        "sugar_g": 5.0,
+        "recipe_id": "RCP00092",
+        "name": "Pakistani Main Course Special 92",
+        "total_reviews": 4733.0,
+        "estimated_cost_usd": 12.58,
+        "category": "Main Course"
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:91"
+    },
+    "i1": {
+      "identity": 10025,
+      "labels": [
+        "Ingredient"
+      ],
+      "properties": {
+        "usda_tier": "generic",
+        "ingredient_name": "beef",
+        "co2_kg_per_kg": 59.85
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10025"
+    },
+    "i2": {
+      "identity": 10002,
+      "labels": [
+        "Ingredient"
+      ],
+      "properties": {
+        "usda_tier": "generic",
+        "ingredient_name": "onion",
+        "co2_kg_per_kg": 0.5
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10002"
+    },
+    "i3": {
+      "identity": 10003,
+      "labels": [
+        "Ingredient"
+      ],
+      "properties": {
+        "usda_tier": "generic",
+        "ingredient_name": "garlic",
+        "co2_kg_per_kg": 0.6
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10003"
+    },
+    "h1": {
+      "identity": 1173188802441642075,
+      "start": 91,
+      "end": 10025,
+      "type": "HAS_INGREDIENT",
+      "properties": {
+        "usda_tier": "sr_legacy",
+        "grams": 14.7,
+        "co2e_kg": 0.879795
+      },
+      "elementId": "5:50f3be16-fe5b-40ab-b788-324b7a68e254:1173188802441642075",
+      "startNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:91",
+      "endNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10025"
+    },
+    "h2": {
+      "identity": 1152922604118474843,
+      "start": 91,
+      "end": 10002,
+      "type": "HAS_INGREDIENT",
+      "properties": {
+        "usda_tier": "sr_legacy",
+        "grams": 315.0,
+        "co2e_kg": 0.1575
+      },
+      "elementId": "5:50f3be16-fe5b-40ab-b788-324b7a68e254:1152922604118474843",
+      "startNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:91",
+      "endNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10002"
+    },
+    "h3": {
+      "identity": 1155174403932160091,
+      "start": 91,
+      "end": 10003,
+      "type": "HAS_INGREDIENT",
+      "properties": {
+        "usda_tier": "sr_legacy",
+        "grams": 48.0,
+        "co2e_kg": 0.0288
+      },
+      "elementId": "5:50f3be16-fe5b-40ab-b788-324b7a68e254:1155174403932160091",
+      "startNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:91",
+      "endNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10003"
+    }
+  },
+  {
+    "r": {
+      "identity": 106,
+      "labels": [
+        "Recipe"
+      ],
+      "properties": {
+        "sodium_mg": 1244.0,
+        "spice_level": "Medium",
+        "meal_type": "Beverage",
+        "cholesterol_mg": 59.0,
+        "is_traditional": true,
+        "fat_g": 23.0,
+        "prep_time_min": 31.0,
+        "is_festival_special": false,
+        "cook_time_min": 34.0,
+        "servings": 7.0,
+        "protein_g": 43.0,
+        "total_co2e": 42.856,
+        "avg_rating": 3.8,
+        "carbon_tier": "high",
+        "carbohydrates_g": 74.0,
+        "is_vegan": false,
+        "is_halal": true,
+        "is_vegetarian": false,
+        "cuisine": "Pakistani",
+        "fiber_g": 6.0,
+        "is_gluten_free": true,
+        "calories": 451.0,
+        "cooking_method": "Boiled",
+        "difficulty": "Medium",
+        "date_added": "2025-02-27",
+        "total_time_min": 65.0,
+        "sugar_g": 7.0,
+        "recipe_id": "RCP00107",
+        "name": "Pakistani Main Course Special 107",
+        "total_reviews": 3661.0,
+        "estimated_cost_usd": 17.28,
+        "category": "Main Course"
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:106"
+    },
+    "i1": {
+      "identity": 10025,
+      "labels": [
+        "Ingredient"
+      ],
+      "properties": {
+        "usda_tier": "generic",
+        "ingredient_name": "beef",
+        "co2_kg_per_kg": 59.85
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10025"
+    },
+    "i2": {
+      "identity": 10002,
+      "labels": [
+        "Ingredient"
+      ],
+      "properties": {
+        "usda_tier": "generic",
+        "ingredient_name": "onion",
+        "co2_kg_per_kg": 0.5
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10002"
+    },
+    "i3": {
+      "identity": 10003,
+      "labels": [
+        "Ingredient"
+      ],
+      "properties": {
+        "usda_tier": "generic",
+        "ingredient_name": "garlic",
+        "co2_kg_per_kg": 0.6
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10003"
+    },
+    "h1": {
+      "identity": 1159678003559530602,
+      "start": 106,
+      "end": 10025,
+      "type": "HAS_INGREDIENT",
+      "properties": {
+        "usda_tier": "generic",
+        "grams": 666.0,
+        "co2e_kg": 39.8601
+      },
+      "elementId": "5:50f3be16-fe5b-40ab-b788-324b7a68e254:1159678003559530602",
+      "startNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:106",
+      "endNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10025"
+    },
+    "h2": {
+      "identity": 1152922604118474858,
+      "start": 106,
+      "end": 10002,
+      "type": "HAS_INGREDIENT",
+      "properties": {
+        "usda_tier": "sr_legacy",
+        "grams": 105.0,
+        "co2e_kg": 0.0525
+      },
+      "elementId": "5:50f3be16-fe5b-40ab-b788-324b7a68e254:1152922604118474858",
+      "startNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:106",
+      "endNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10002"
+    },
+    "h3": {
+      "identity": 1155174403932160106,
+      "start": 106,
+      "end": 10003,
+      "type": "HAS_INGREDIENT",
+      "properties": {
+        "usda_tier": "sr_legacy",
+        "grams": 18.0,
+        "co2e_kg": 0.0107999999999999
+      },
+      "elementId": "5:50f3be16-fe5b-40ab-b788-324b7a68e254:1155174403932160106",
+      "startNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:106",
+      "endNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10003"
+    }
+  },
+  {
+    "r": {
+      "identity": 125,
+      "labels": [
+        "Recipe"
+      ],
+      "properties": {
+        "sodium_mg": 1422.0,
+        "spice_level": "Medium",
+        "meal_type": "Breakfast",
+        "cholesterol_mg": 18.0,
+        "is_traditional": false,
+        "fat_g": 21.0,
+        "prep_time_min": 29.0,
+        "is_festival_special": false,
+        "cook_time_min": 87.0,
+        "servings": 5.0,
+        "protein_g": 40.0,
+        "total_co2e": 25.2931,
+        "avg_rating": 3.9,
+        "carbon_tier": "high",
+        "carbohydrates_g": 35.0,
+        "is_vegan": false,
+        "is_halal": true,
+        "is_vegetarian": false,
+        "cuisine": "Pakistani",
+        "fiber_g": 8.0,
+        "is_gluten_free": false,
+        "calories": 672.0,
+        "cooking_method": "Roasted",
+        "difficulty": "Hard",
+        "date_added": "2023-05-26",
+        "total_time_min": 116.0,
+        "sugar_g": 13.0,
+        "recipe_id": "RCP00126",
+        "name": "Nihari",
+        "total_reviews": 4297.0,
+        "estimated_cost_usd": 9.82,
+        "category": "Main Course"
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:125"
+    },
+    "i1": {
+      "identity": 10025,
+      "labels": [
+        "Ingredient"
+      ],
+      "properties": {
+        "usda_tier": "generic",
+        "ingredient_name": "beef",
+        "co2_kg_per_kg": 59.85
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10025"
+    },
+    "i2": {
+      "identity": 10002,
+      "labels": [
+        "Ingredient"
+      ],
+      "properties": {
+        "usda_tier": "generic",
+        "ingredient_name": "onion",
+        "co2_kg_per_kg": 0.5
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10002"
+    },
+    "i3": {
+      "identity": 10003,
+      "labels": [
+        "Ingredient"
+      ],
+      "properties": {
+        "usda_tier": "generic",
+        "ingredient_name": "garlic",
+        "co2_kg_per_kg": 0.6
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10003"
+    },
+    "h1": {
+      "identity": 1179944201882697853,
+      "start": 125,
+      "end": 10025,
+      "type": "HAS_INGREDIENT",
+      "properties": {
+        "usda_tier": "sr_legacy",
+        "grams": 58.8,
+        "co2e_kg": 3.51918
+      },
+      "elementId": "5:50f3be16-fe5b-40ab-b788-324b7a68e254:1179944201882697853",
+      "startNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:125",
+      "endNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10025"
+    },
+    "h2": {
+      "identity": 1152922604118474877,
+      "start": 125,
+      "end": 10002,
+      "type": "HAS_INGREDIENT",
+      "properties": {
+        "usda_tier": "sr_legacy",
+        "grams": 105.0,
+        "co2e_kg": 0.0525
+      },
+      "elementId": "5:50f3be16-fe5b-40ab-b788-324b7a68e254:1152922604118474877",
+      "startNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:125",
+      "endNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10002"
+    },
+    "h3": {
+      "identity": 1155174403932160125,
+      "start": 125,
+      "end": 10003,
+      "type": "HAS_INGREDIENT",
+      "properties": {
+        "usda_tier": "sr_legacy",
+        "grams": 42.0,
+        "co2e_kg": 0.0251999999999999
+      },
+      "elementId": "5:50f3be16-fe5b-40ab-b788-324b7a68e254:1155174403932160125",
+      "startNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:125",
+      "endNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10003"
+    }
+  },
+  {
+    "r": {
+      "identity": 127,
+      "labels": [
+        "Recipe"
+      ],
+      "properties": {
+        "sodium_mg": 385.0,
+        "spice_level": "Hot",
+        "meal_type": "Breakfast",
+        "cholesterol_mg": 49.0,
+        "is_traditional": false,
+        "fat_g": 17.0,
+        "prep_time_min": 53.0,
+        "is_festival_special": false,
+        "cook_time_min": 165.0,
+        "servings": 6.0,
+        "protein_g": 30.0,
+        "total_co2e": 29.5084,
+        "avg_rating": 4.2,
+        "carbon_tier": "high",
+        "carbohydrates_g": 30.0,
+        "is_vegan": false,
+        "is_halal": true,
+        "is_vegetarian": false,
+        "cuisine": "Pakistani",
+        "fiber_g": 2.0,
+        "is_gluten_free": false,
+        "calories": 185.0,
+        "cooking_method": "Fried",
+        "difficulty": "Easy",
+        "date_added": "2023-03-25",
+        "total_time_min": 218.0,
+        "sugar_g": 5.0,
+        "recipe_id": "RCP00128",
+        "name": "Karahi",
+        "total_reviews": 3810.0,
+        "estimated_cost_usd": 8.93,
+        "category": "Main Course"
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:127"
+    },
+    "i1": {
+      "identity": 10025,
+      "labels": [
+        "Ingredient"
+      ],
+      "properties": {
+        "usda_tier": "generic",
+        "ingredient_name": "beef",
+        "co2_kg_per_kg": 59.85
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10025"
+    },
+    "i2": {
+      "identity": 10002,
+      "labels": [
+        "Ingredient"
+      ],
+      "properties": {
+        "usda_tier": "generic",
+        "ingredient_name": "onion",
+        "co2_kg_per_kg": 0.5
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10002"
+    },
+    "i3": {
+      "identity": 10003,
+      "labels": [
+        "Ingredient"
+      ],
+      "properties": {
+        "usda_tier": "generic",
+        "ingredient_name": "garlic",
+        "co2_kg_per_kg": 0.6
+      },
+      "elementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10003"
+    },
+    "h1": {
+      "identity": 1159678003559530623,
+      "start": 127,
+      "end": 10025,
+      "type": "HAS_INGREDIENT",
+      "properties": {
+        "usda_tier": "generic",
+        "grams": 474.0,
+        "co2e_kg": 28.3689
+      },
+      "elementId": "5:50f3be16-fe5b-40ab-b788-324b7a68e254:1159678003559530623",
+      "startNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:127",
+      "endNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10025"
+    },
+    "h2": {
+      "identity": 1152922604118474879,
+      "start": 127,
+      "end": 10002,
+      "type": "HAS_INGREDIENT",
+      "properties": {
+        "usda_tier": "sr_legacy",
+        "grams": 105.0,
+        "co2e_kg": 0.0525
+      },
+      "elementId": "5:50f3be16-fe5b-40ab-b788-324b7a68e254:1152922604118474879",
+      "startNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:127",
+      "endNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10002"
+    },
+    "h3": {
+      "identity": 1155174403932160127,
+      "start": 127,
+      "end": 10003,
+      "type": "HAS_INGREDIENT",
+      "properties": {
+        "usda_tier": "sr_legacy",
+        "grams": 42.0,
+        "co2e_kg": 0.0251999999999999
+      },
+      "elementId": "5:50f3be16-fe5b-40ab-b788-324b7a68e254:1155174403932160127",
+      "startNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:127",
+      "endNodeElementId": "4:50f3be16-fe5b-40ab-b788-324b7a68e254:10003"
+    }
+  }
+]

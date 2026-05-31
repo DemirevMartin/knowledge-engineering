@@ -1,0 +1,5 @@
+MATCH (r:Recipe)-[h1:HAS_INGREDIENT]->(i1:Ingredient {ingredient_name: 'beef'})
+MATCH (r)-[h2:HAS_INGREDIENT]->(i2:Ingredient {ingredient_name: 'onion'})
+MATCH (r)-[h3:HAS_INGREDIENT]->(i3:Ingredient {ingredient_name: 'garlic'})
+RETURN r, i1, i2, i3, h1, h2, h3
+LIMIT 15
