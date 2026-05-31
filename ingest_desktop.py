@@ -136,8 +136,8 @@ def _load_recipe_batch(tx, batch):
 
 
 def load_recipes(driver):
-    recipes_df = pd.read_csv(os.path.join(PROJECT_DIR, "recipes_master.csv"))
-    nutrition_df = pd.read_csv(os.path.join(PROJECT_DIR, "recipe_nutrition.csv"))
+    recipes_df = pd.read_csv(os.path.join(PROJECT_DIR, "preprocessing", "recipes_master.csv"))
+    nutrition_df = pd.read_csv(os.path.join(PROJECT_DIR, "preprocessing", "recipe_nutrition.csv"))
     df = recipes_df.merge(nutrition_df, on="recipe_id", how="left")
 
     rows = []
@@ -195,9 +195,9 @@ def _load_ingredient_batch(tx, batch):
 
 
 def load_ingredients(driver):
-    co2_df = pd.read_csv(os.path.join(PROJECT_DIR, "ingredient_co2.csv"))
+    co2_df = pd.read_csv(os.path.join(PROJECT_DIR, "preprocessing", "ingredient_co2.csv"))
     grounded = pd.read_csv(
-        os.path.join(PROJECT_DIR, "recipe_ingredients_grounded.csv"),
+        os.path.join(PROJECT_DIR, "preprocessing", "recipe_ingredients_grounded.csv"),
         usecols=["ingredient_name", "usda_tier"],
     )
 
@@ -250,7 +250,7 @@ def _load_has_ingredient_batch(tx, batch):
 
 
 def load_has_ingredient(driver):
-    df = pd.read_csv(os.path.join(PROJECT_DIR, "recipe_ingredients_grounded.csv"))
+    df = pd.read_csv(os.path.join(PROJECT_DIR, "preprocessing", "recipe_ingredients_grounded.csv"))
     df["ingredient_name"] = df["ingredient_name"].str.strip().str.lower()
 
     rows = []
