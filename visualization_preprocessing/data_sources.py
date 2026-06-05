@@ -154,6 +154,6 @@ ax.legend(handles=handles, loc='upper right', ncol=1, frameon=True,
           framealpha=0.95, edgecolor='#cccccc')
 
 plt.tight_layout()
-plt.savefig("./visualization_preprocessing/data_exchange_pipeline.png",
+plt.savefig("./visualization_preprocessing/data_sources_exchange.png",
             dpi=200, bbox_inches='tight', facecolor=fig.get_facecolor())
 plt.show()
