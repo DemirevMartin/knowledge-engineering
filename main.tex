@@ -63,7 +63,7 @@ In the Knowledge Graph, the instances represent a structured synthesis of region
 \begin{itemize}
     \item \textbf{Recipes:} Central nodes representing unique South Asian culinary compositions (e.g., Sajji, Dal Makhani, Sindhi Biryani). Each instance serves as a container for master metadata, including cuisine origin, difficulty level, and meal type.
     \item \textbf{Ingredients:} Canonical food items extracted from recipe compositions (e.g., Paneer, Ghee, Chickpeas). These are modelled as discrete entities with associated attributes such as culinary category and mass-normalised quantities.
-    \item \textbf{Environmental Impact Factors:} Quantitative instances derived from two scientific sources. Primary CO$_2$e values come from the Wolfram Food Carbon Footprint dataset (538 foods, compiled from peer-reviewed LCA studies including Poore \& Nemecek 2018). For 9 ingredients absent from Wolfram, fallback values were sourced from the Our World in Data GHG Emissions per kg dataset (Poore \& Nemecek 2018 via OWID). Each instance is a CO$_2$e rate (kg CO$_2$e/kg of food) mapped to a canonical ingredient entity.
+    \item \textbf{Environmental Impact Factors:} Quantitative instances derived from two scientific sources. Primary CO$_2$e values come from the Wolfram Food Carbon Footprint dataset (538 foods, compiled from peer-reviewed LCA studies including Poore \& Nemecek 2018). For 4 ingredients absent from Wolfram, fallback values were sourced from the Our World in Data GHG Emissions per kg dataset (Poore \& Nemecek 2018 via OWID). Each instance is a CO$_2$e rate (kg CO$_2$e/kg of food) mapped to a canonical ingredient entity.
     \item \textbf{Gram-Weight Conversion References:} 4,446 portion entries from the USDA FoodData Central SR Legacy database (2018 release), each providing an empirically measured gram weight for a specific food item and culinary unit (e.g., tablespoon, teaspoon, cup, medium). These entries are used during preprocessing to convert recipe quantity strings into metric mass (grams) before CO$_2$e calculation. USDA data does not itself become a node in the Knowledge Graph --- it enriches the \texttt{HAS\_INGREDIENT} edge with a \texttt{grams} attribute derived from the conversion.
     \item \textbf{Nutritional Components:} Discrete instances of macro and micronutrients (e.g., protein, fibre, iron) associated with each recipe, representing the physiological value of the culinary instance.
 \end{itemize}
@@ -71,22 +71,34 @@ In the Knowledge Graph, the instances represent a structured synthesis of region
 
 There are multiple types of instances.The dataset is architected as a heterogeneous knowledge graph consisting of various node and edge types. This multi-modal structure allows for complex traversal across different data domains:
 \begin{itemize}
-    \item \textbf{Nodes (Entity Instances):} The graph contains several distinct classes of nodes:
+    \item \textbf{Nodes (Entity Instances):} The graph (built in \texttt{ingest\_desktop.py})
+    contains four distinct classes of nodes:
     \begin{itemize}
-        \item \textit{Recipe Nodes:} Master entities containing high-level metadata and ratings.
-        \item \textit{Ingredient Nodes:} Building blocks of the recipes, mapped to scientific impact data.
-        \item \textit{Instructional Steps:} Ordered procedural instances representing the temporal knowledge required for recipe execution.
-        \item \textit{Cuisine/Category Nodes:} Organizational instances used for regional classification (e.g., Pakistani, Indian, Bangladeshi).
+        \item \textit{Recipe Nodes:} Master entities containing high-level metadata, ratings,
+        denormalised nutritional attributes, and the derived \texttt{total\_co2e} and
+        \texttt{carbon\_tier} properties added by inference rule R1.
+        \item \textit{Ingredient Nodes:} Building blocks of the recipes, each carrying its
+        canonical CO$_2$e emission factor (\texttt{co2\_kg\_per\_kg}) and \texttt{usda\_tier}.
+        \item \textit{Cuisine Nodes:} Organizational instances used for regional classification
+        (e.g., Pakistani, Indian, Bangladeshi).
+        \item \textit{NutritionalProfile Nodes:} One per recipe, holding the macro- and
+        micronutrient attributes (calories, protein, fat, sugar, fibre, etc.).
     \end{itemize}
-    \item \textbf{Edges (Relationship Instances):} The graph utilizes directed relationship types to link these nodes:
+    \item \textbf{Edges (Relationship Instances):} The graph utilizes three directed
+    relationship types to link these nodes:
     \begin{itemize}
-        \item \textit{Composition (Recipe $\rightarrow$ Ingredient):} A weighted relationship
-        representing the inclusion of an ingredient, qualified by a \texttt{grams} attribute
-        expressing the quantity in metric mass (g), grounded via USDA SR Legacy portion data.
-        \item \textit{Classification (Ingredient $\rightarrow$ Food Category):} A semantic edge mapping ingredients to broader groups (e.g., Dairy, Grains) to facilitate environmental proxy modeling for specialized regional items.
-        \item \textit{Procedural Linkage (Recipe $\rightarrow$ Steps):} A sequential relationship connecting a recipe to its constituent preparation instructions.
-        \item \textit{Sustainability Mapping (Ingredient $\rightarrow$ Carbon Metric):} An attribute-link connecting canonical ingredients to validated greenhouse gas emission factors.
+        \item \textit{HAS\_INGREDIENT (Recipe $\rightarrow$ Ingredient):} A weighted relationship
+        representing the inclusion of an ingredient, qualified by \texttt{grams} (the quantity in
+        metric mass, grounded via USDA SR Legacy portion data), \texttt{co2e\_kg} (the ingredient's
+        contribution to the recipe footprint), and \texttt{usda\_tier} (grounding provenance).
+        \item \textit{BELONGS\_TO\_CUISINE (Recipe $\rightarrow$ Cuisine):} A semantic edge mapping
+        each recipe to its regional cuisine.
+        \item \textit{HAS\_NUTRITION (Recipe $\rightarrow$ NutritionalProfile):} A one-to-one edge
+        connecting each recipe to its physiological profile.
     \end{itemize}
+    The ingredient-to-carbon mapping is represented as a node property
+    (\texttt{Ingredient.co2\_kg\_per\_kg}) rather than a separate node, and ingredient food
+    categories are not modelled as nodes in the current schema.
 \end{itemize}
 
 \question{\subsubsection*{How many instances are there in total (of each type, if appropriate)?}}
@@ -100,23 +112,29 @@ by type is detailed below:
     master node within the graph.
     \item \textbf{Ingredient Nodes:} 58 canonical entities, each associated with a
     validated CO$_2$e rate.
-    \item \textbf{Cuisine/Category Nodes:} 5 primary regional categories (Indian,
+    \item \textbf{Cuisine Nodes:} 5 primary regional categories (Indian,
     Pakistani, Bangladeshi, Afghan, Fusion).
-    \item \textbf{HAS\_INGREDIENT Edges:} 103,908 directed edges, one per ingredient
-    line item, each carrying \texttt{grams}, \texttt{g\_per\_unit}, and
-    \texttt{usda\_tier} attributes.
-    \item \textbf{Instructional Step Nodes:} 77,914 individual procedural steps.
-    \item \textbf{Nutritional Profile Nodes:} 9,997 instances, one per recipe,
+    \item \textbf{NutritionalProfile Nodes:} 9,997 instances, one per recipe,
     containing macro and micronutrient attributes.
+    \item \textbf{HAS\_INGREDIENT Edges:} 96,139 directed edges. These are formed by
+    merging the 103,908 ingredient line items on the (recipe, ingredient) pair, so
+    repeated mentions of the same ingredient within a recipe collapse to a single edge.
+    Each edge carries \texttt{grams}, \texttt{co2e\_kg}, and \texttt{usda\_tier} attributes.
+    \item \textbf{BELONGS\_TO\_CUISINE Edges:} 9,997 directed edges linking each recipe
+    to its cuisine.
+    \item \textbf{HAS\_NUTRITION Edges:} 9,997 directed edges linking each recipe to its
+    NutritionalProfile node.
     \item \textbf{CO$_2$e Factor Instances:} 58 validated emission rates
-    (kg~CO$_2$e/kg of food), one per canonical ingredient.
+    (kg~CO$_2$e/kg of food), stored as a property on each canonical ingredient node.
     \item \textbf{Gram-Weight Conversion References (preprocessing only):} 4,446
     USDA SR Legacy portion entries used during pipeline execution; not stored as
     graph nodes.
 \end{itemize}
 
-In total, the Knowledge Graph architecture manages approximately 202,000 nodes and
-relational edges across culinary, nutritional, and environmental domains.
+In total, the Knowledge Graph manages approximately 20,000 nodes (9,997 Recipe,
+9,997 NutritionalProfile, 58 Ingredient, 5 Cuisine) and approximately 116,000
+relational edges (96,139 HAS\_INGREDIENT, 9,997 BELONGS\_TO\_CUISINE, 9,997
+HAS\_NUTRITION) across culinary, nutritional, and environmental domains.
 
 \question{\subsubsection*{What data does each instance consist of ? “Raw” data (e.g., unprocessed text or images)? Features/attributes? Is there a label/target associated with
 instances? If the instances related to people, are subpopulations identified (e.g., by age, gender, etc.) and what is
@@ -170,7 +188,6 @@ The relationships between individual instances in the knowledge graph are made e
 
 \begin{itemize}
     \item \textbf{Recipe-Ingredient Composition:} Relationships between recipe instances and their constituent ingredients are explicitly defined in \texttt{recipe\_ingredients.csv}. The recipe\_id functions as a foreign key that links the master recipe node to multiple ingredient entries, each qualified by a quantity and ingredient\_number attribute.
-    \item \textbf{Sequential Instructional Mapping:} The procedural link between a recipe and its preparation logic is explicitly established in \texttt{recipe\_steps.csv}. Using the recipe\_id as a join key, the system maps recipes to a series of ordered instructional steps (step\_number), creating a temporal relationship within the graph.
     \item \textbf{Nutritional Attribution:} A one-to-one explicit relationship exists between recipes and their physiological data in \texttt{recipe\_nutrition.csv}. The recipe\_id ensures that each recipe node is directly associated with its specific macro and micronutrient attributes.
     \item \textbf{Categorical and Regional Hierarchy:} Individual recipes are explicitly linked to their broader cultural subpopulations through the cuisine attribute in \texttt{recipes\_master.csv}. This establishes a hierarchical relationship between specific dish instances and regional metadata (e.g., Pakistani, Afghan).
     \item \textbf{Sustainability Semantic Linkage:} In the final knowledge graph architecture, the relationship between an ingredient\_name and its environmental impact factor ($kg\ CO_2e/kg$) is made explicit via entity resolution. This allows for the traversal from a high-level recipe instance down to its calculated carbon footprint.
@@ -199,9 +216,9 @@ The South Asian recipe dataset exhibited several forms of structural and semanti
 
 \begin{itemize}
     \item \textbf{High-Cardinality Ingredient Redundancy (resolved):} The raw \texttt{recipe\_ingredients.csv} contained 103,908 entries with significant nomenclature variation (e.g. ``chopped onions'', ``medium onions'', ``red onion''), representing the same canonical entity. This was resolved by mapping all variations to a list of 58 canonical ingredient names with a controlled synonym map to ensure that each entry aligns with a unique CO$_2$e factor.
-    \item \textbf{Heterogeneous Measurement Noise (partially resolved):} The \texttt{quantity} field contained non-computable strings (``to taste'', ``a dash'') alongside conflicting volumetric and mass scales (cups, grams, tablespoons, ml). This was addressed through a three-tier quantity grounding pipeline: (1) USDA SR Legacy lookup for empirically measured gram weights per culinary unit; (2) density-based conversion for liquid ingredients given in ml; (3) fixed fallback defaults for irreducible cases. Approximately 52.9\% of the ingredient rows were resolved with USDA SR Legacy; the remaining 47.1\% used fallback values. All conversion decisions are recorded in the \texttt{usda\_tier} column of \texttt{recipe\_ingredients\_grounded.csv}.
+    \item \textbf{Heterogeneous Measurement Noise (partially resolved):} The \texttt{quantity} field contained non-computable strings (``to taste'', ``a dash'') alongside conflicting volumetric and mass scales (cups, grams, tablespoons, ml). This was addressed through a three-tier quantity grounding pipeline: (1) USDA SR Legacy lookup for empirically measured gram weights per culinary unit; (2) density-based conversion for liquid ingredients given in ml; (3) fixed fallback defaults for irreducible cases. Approximately 52.9\% of the ingredient rows were resolved with USDA SR Legacy; a further 17.2\% arrived already in absolute mass units (g/kg) and passed through directly, and the remaining 29.9\% used fixed fallback defaults. All conversion decisions are recorded in the \texttt{usda\_tier} column of \texttt{recipe\_ingredients\_grounded.csv}.
     \item \textbf{Categorical Label Inconsistency (residual):} Some ingredients appear under inconsistent category labels in the source data (e.g., ``Ginger'' classified as both Vegetables and Spices). This affects semantic categorisation but not CO$_2$e calculation, which is keyed on canonical ingredient name. Residual inconsistency is documented but not corrected, as category labels are not used in the RQ analyses.
-    \item \textbf{Relational Overlap (managed):} The 9,997 master recipe records are distributed across three relational tables (\texttt{recipes\_master.csv}, \texttt{recipe\_nutrition.csv}, \texttt{recipe\_steps.csv}). This structural redundancy was managed by using \texttt{recipe\_id} as a join key during graph construction, centralising all attributes under a single Recipe node.
+    \item \textbf{Relational Overlap (managed):} The 9,997 master recipe records are distributed across two relational tables (\texttt{recipes\_master.csv} and \texttt{recipe\_nutrition.csv}), with ingredient line items held separately in \texttt{recipe\_ingredients.csv}. This structural redundancy was managed by using \texttt{recipe\_id} as a join key during graph construction, centralising all attributes under a single Recipe node.
 \end{itemize}
 
 \question{\subsubsection*{Is the dataset self-contained, or does it link to or otherwise rely on external resources (e.g., websites, tweets, other datasets)? If it links to or relies on external resources, a) are there guarantees that they will exist, and remain constant, over time; b) are there official archival versions of the complete dataset (i.e., including the external resources as they existed at the time the dataset was created); c) are there any restrictions (e.g., licenses, fees) associated with any of the external resources that might apply to a future user? Please provide descriptions of all external resources and any restrictions associated with them, as well as links or other access points, as appropriate.}}
@@ -295,7 +312,7 @@ All data is indirectly inferred: CO$_2$e values are LCA model outputs derived fr
 
 \question{\subsubsection*{If the dataset is a sample from a larger set, what was the sampling strategy (e.g., deterministic, probabilistic with specific sampling probabilities)?}}
 
-The 538 food items in Dataset Wolfram represent a curated selection from the broader universe of foods evaluated in LCA literature. The selection appears to prioritise globally traded commodity foods and Western dietary staples. This introduces a systematic gap for this project: several South Asian ingredients (e.g., fenugreek leaves, curry leaves, regional spice blends) are absent from Wolfram's coverage, necessitating the OWID fallback described in Section 4.
+The 538 food items in Dataset Wolfram represent a curated selection from the broader universe of foods evaluated in LCA literature. The selection appears to prioritise globally traded commodity foods and Western dietary staples. This introduces a gap for this project: 4 ingredients (paneer, semolina, potato, tomato) are absent from Wolfram's coverage, necessitating the OWID fallback described in Section 4.
 
 \question{\subsubsection*{Who was involved in the data collection process (e.g., students, crowdworkers, contractors) and how were they compensated (e.g., how much were crowdworkers paid)? What does this context mean for your project?}}
 
@@ -349,7 +366,7 @@ SR Legacy was created to support US dietary assessment, nutrition research, food
 
 \question{\subsubsection*{Where was the data recorded? (geographic location, time, sociological context and possible others.) What does this context mean for your project?}}
 
-Data was collected in USDA laboratories and contracted facilities in the United States, using food samples sourced from the US commercial food supply. The geographic scope is US-centric. For South Asian ingredients absent from the US food supply (e.g., fenugreek leaves, curry leaves), SR Legacy has no entries, which explains why approximately 47.1\% of ingredient rows fell back to generic defaults rather than USDA-grounded values.
+Data was collected in USDA laboratories and contracted facilities in the United States, using food samples sourced from the US commercial food supply. The geographic scope is US-centric. For South Asian ingredients absent from the US food supply (e.g., fenugreek leaves, curry leaves), SR Legacy has no entries, which explains why approximately 29.9\% of ingredient rows fell back to generic defaults rather than USDA-grounded values (a further 17.2\% were already supplied as exact masses).
 
 \question{\subsubsection*{Who was the data created for? What does this context mean for your project?}}
 
@@ -371,7 +388,7 @@ No single research question is associated with SR Legacy; it is a reference data
 Yes, the original raw data for all three source datasets was preserved alongside processed outputs:
 
 \begin{itemize}
-    \item \textbf{Dataset Foods~\cite{kaggle_southasian}:} The original Kaggle files (\texttt{recipe\_ingredients.csv}, \\ \texttt{recipe\_steps.csv}, \texttt{recipe\_nutrition.csv}, \texttt{recipes\_master.csv}) are retained unmodified. Attributes excluded from the current scope (e.g., step-by-step instructions, some categorical metadata) remain available for future use.
+    \item \textbf{Dataset Foods~\cite{kaggle_southasian}:} The original Kaggle files used in this project (\texttt{recipe\_ingredients.csv}, \texttt{recipe\_nutrition.csv}, \texttt{recipes\_master.csv}) are retained unmodified. The step-by-step instruction table from the original dataset was not used in this project and is not part of the Knowledge Graph; some categorical metadata is likewise retained but excluded from the current scope.
     \item \textbf{Dataset Wolfram~\cite{wolfram_carbon}:} Originally acquired as a \texttt{.json} file from the Wolfram Data Repository. The raw JSON is retained alongside a derived Excel/CSV version with columns \texttt{Clean Name}, \texttt{CO2e Avg (kg)}, \texttt{CO2e Lower}, and \texttt{CO2e Upper}, produced for pipeline integration.
     \item \textbf{Dataset Quantities~\cite{usda_srlegacy}:} The full 2018 CSV release is retained unmodified. Only \texttt{food\_portion.csv} joined with \texttt{food.csv} is actively used in the pipeline; the remaining tables were deleted from this project's directory as they are not used.
 \end{itemize}
@@ -413,8 +430,8 @@ Data was organised through a mapping hierarchy that bridges the specificity of c
 \begin{enumerate}
     \item \textbf{Condensing the Raw Data:} A Python script extracted all unique ingredient entries from \\ \texttt{recipe\_ingredients.csv} (103,908 rows) and collapsed them to 58 canonical ingredient names, eliminating preparation-state and quantity-descriptor noise.
     \item \textbf{Canonical Grouping:} Surface-form variations were grouped under single canonical entities. For example, ``paneer'' and ``ghee'' are distinct canonical entries (not grouped under ``Dairy'') to preserve CO$_2$e precision --- paneer maps to Cheese (23.88\,kg CO$_2$e/kg) while ghee maps to Butter (14.35\,kg CO$_2$e/kg) --- a meaningful difference.
-    \item \textbf{CO$_2$e Mapping:} Each canonical ingredient was assigned a CO$_2$e rate. The mapping rule was strict: every canonical ingredient must be assigned a value. Wolfram was queried first; OWID served as fallback for the 9 ingredients not covered by Wolfram. 100\% coverage was achieved.
-    \item \textbf{Gram-Weight Grounding:} Each ingredient-quantity row was assigned a gram weight via USDA SR Legacy lookup (52.9\% of rows) or fallback defaults (47.1\%). Results are stored in \\ \texttt{recipe\_ingredients\_grounded.csv} with full provenance (\texttt{usda\_tier}, \texttt{g\_per\_unit}).
+    \item \textbf{CO$_2$e Mapping:} Each canonical ingredient was assigned a CO$_2$e rate. The mapping rule was strict: every canonical ingredient must be assigned a value. Wolfram was queried first; OWID served as fallback for the 4 ingredients not covered by Wolfram. 100\% coverage was achieved.
+    \item \textbf{Gram-Weight Grounding:} Each ingredient-quantity row was assigned a gram weight via USDA SR Legacy lookup (52.9\% of rows), direct exact-mass passthrough (17.2\%), or fixed fallback defaults (29.9\%). Results are stored in \\ \texttt{recipe\_ingredients\_grounded.csv} with full provenance (\texttt{usda\_tier}, \texttt{g\_per\_unit}).
 \end{enumerate}
 
 \question{\subsubsection*{How did you integrate the different datasets? What was the process for deciding which data to map to which data? If you wrote code for this, please link to it here.}}
@@ -423,7 +440,7 @@ Integration was a three-step process designed to make culinary recipe data seman
 
 \begin{itemize}
     \item \textbf{Step 1: Ingredient Canonicalisation:} A Python script in \texttt{main.ipynb} extracted all unique ingredient names from \texttt{recipe\_ingredients.csv}. A manual synonym map (\texttt{WOLFRAM\_MAP}) collapsed surface-form variations to 58 canonical names aligned with Wolfram entries. The resulting mapping is recorded in \texttt{ingredient\_co2.csv}, which stores the canonical name, matched CO$_2$e value, and source (Wolfram or OWID) for each ingredient.
-    \item \textbf{Step 2: CO$_2$e Rate Assignment:} Each canonical ingredient was assigned a CO$_2$e rate in \texttt{main.ipynb}. Wolfram was queried first via \texttt{WOLFRAM\_MAP}. For the 9 ingredients not covered by Wolfram, the OWID GHG dataset was used via \texttt{OWID\_MAP}. This achieved 100\% CO$_2$e coverage across all 58 canonical ingredients.
+    \item \textbf{Step 2: CO$_2$e Rate Assignment:} Each canonical ingredient was assigned a CO$_2$e rate in \texttt{main.ipynb}. Wolfram was queried first via \texttt{WOLFRAM\_MAP}. For the 4 ingredients not covered by Wolfram, the OWID GHG dataset was used via \texttt{OWID\_MAP}. This achieved 100\% CO$_2$e coverage across all 58 canonical ingredients.
     \item \textbf{Step 3: Gram-Weight Grounding via USDA SR Legacy:} Each ingredient-quantity entry in \\ \texttt{recipe\_ingredients.csv} was converted from its original culinary unit to grams in \\ \texttt{quantities.ipynb}. The lookup searched the SR Legacy portion table (\texttt{food\_portion.csv} joined with \texttt{food.csv}) by keyword, filtered to rows with a matching unit type parsed from the \texttt{modifier} column, and returned the median gram weight of the five plainest-scoring matches. Liquid ingredients given in ml were converted using density values. Ingredients where no USDA match existed fell back to fixed unit defaults. The result is stored in \texttt{recipe\_ingredients\_grounded.csv}, which records \texttt{grams}, \texttt{g\_per\_unit}, and \texttt{usda\_tier} per row.
 \end{itemize}
 
@@ -431,7 +448,7 @@ The final recipe-level CO$_2$e was computed as:
 \begin{equation}
     \text{co2e\_kg} = \sum_{i} \left( \text{qty\_amount}_i \times \text{g\_per\_unit}_i \times \frac{\text{co2\_kg\_per\_kg}_i}{1000} \right)
 \end{equation}
-Results are stored in \texttt{recipe\_co2.csv} (one row per recipe, 9,997 rows). Across all recipes, the median CO$_2$e is 9.04\,kg CO$_2$eq and the mean is 13.68\,kg CO$_2$eq.
+Results are stored in \texttt{recipe\_co2.csv} (one row per recipe, 9,997 rows). Across all recipes, the median CO$_2$e is 8.39\,kg CO$_2$eq and the mean is 13.41\,kg CO$_2$eq.
 
 \question{\subsubsection*{If you use data exchange in your project, describe your process and share your code.}}
 
@@ -454,7 +471,7 @@ Yes, the collection and processing procedure largely achieves the stated motivat
 \textbf{Limitations:}
 \begin{itemize}
     \item \textbf{Loss of Processing Detail:} To make the datasets compatible, highly specific ingredient forms were collapsed into canonical categories (e.g., ``tomato pur\'{e}e'' and ``fresh tomatoes'' both map to the Wolfram ``Tomatoes'' entry). This sacrifices the additional CO$_2$e contribution from industrial processing and packaging.
-    \item \textbf{Gram-Weight Estimation Uncertainty:} Gram-weight conversion via USDA SR Legacy reflects US food norms and laboratory conditions. For South Asian culinary contexts, where ingredient preparation states may differ (e.g., ghee is used differently from butter; paneer has no direct USDA entry and was proxied by cottage cheese), the gram-weight estimates carry inherent uncertainty. Approximately 47.1\% of ingredient rows used generic fallback values rather than USDA-grounded weights, because SR Legacy does not contain portion data for every ingredient-unit combination present in the dataset. These fallback rows are flagged via the \texttt{usda\_tier} column in \texttt{recipe\_ingredients\_grounded.csv}.
+    \item \textbf{Gram-Weight Estimation Uncertainty:} Gram-weight conversion via USDA SR Legacy reflects US food norms and laboratory conditions. For South Asian culinary contexts, where ingredient preparation states may differ (e.g., ghee is used differently from butter; paneer has no direct USDA entry and was proxied by cottage cheese), the gram-weight estimates carry inherent uncertainty. Approximately 29.9\% of ingredient rows used generic fallback values rather than USDA-grounded weights (with a further 17.2\% supplied directly as exact mass), because SR Legacy does not contain portion data for every ingredient-unit combination present in the dataset. These fallback rows are flagged via the \texttt{usda\_tier} column in \texttt{recipe\_ingredients\_grounded.csv}.
     \item \textbf{CO$_2$e as a Proportional Indicator:} Because gram quantities are estimates rather than exact measurements, the computed CO$_2$e values are best interpreted as proportional indicators for comparative ranking rather than precise absolute measurements.
 \end{itemize}
 
@@ -534,13 +551,13 @@ The three source datasets (described in Sections 3 and 4) are mutually incompati
 The pipeline has three stages, executed across \texttt{main.ipynb} (CO$_2$e lookup) and \texttt{quantities.ipynb} (gram-weight grounding).
 
 \paragraph{Stage 1: Ingredient canonicalisation.}
-The raw \texttt{recipe\_ingredients.csv} contains 103,908 ingredient line items but only 58 distinct base ingredients, obscured by surface-form variation (e.g.\ ``chopped onions'', ``red onion'', ``medium onions'' all denote onion). Each of the 58 canonical names was matched to a CO$_2$e emission factor through a three-layer strategy, building up coverage as shown in Figure~\ref{fig:coverage}. A first pass matched names directly against the Wolfram food list (21 ingredients, 36\%). A manual synonym map (\texttt{WOLFRAM\_MAP}) then aligned culinary names to Wolfram's vocabulary --- for example ``ghee'' $\rightarrow$ butter, ``garam masala'' $\rightarrow$ spice --- lifting coverage to 50 ingredients (86\%). The remaining 8 ingredients absent from Wolfram (notably paneer and semolina) were resolved through an OWID GHG fallback (\texttt{OWID\_MAP}), reaching 100\% coverage of all 58 ingredients and all 103,908 rows. The full synonym and fallback maps are documented in Appendix~\ref{app:mappings}.
+The raw \texttt{recipe\_ingredients.csv} contains 103,908 ingredient line items but only 58 distinct base ingredients, obscured by surface-form variation (e.g.\ ``chopped onions'', ``red onion'', ``medium onions'' all denote onion). Each of the 58 canonical names was matched to a CO$_2$e emission factor through a three-layer strategy, building up coverage as shown in Figure~\ref{fig:coverage}. A first pass matched names directly against the Wolfram food list (28 ingredients, 48\%). A manual synonym map (\texttt{WOLFRAM\_MAP}) then aligned culinary names to Wolfram's vocabulary --- for example ``ghee'' $\rightarrow$ butter, ``garam masala'' $\rightarrow$ spice --- lifting coverage to 54 ingredients (93\%). The remaining 4 ingredients absent from Wolfram (paneer, semolina, potato, tomato) were resolved through an OWID GHG fallback (\texttt{OWID\_MAP}), reaching 100\% coverage of all 58 ingredients and all 103,908 rows. The full synonym and fallback maps are documented in Appendix~\ref{app:mappings}.
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{figures/05_coverage_buildup.png}
     \caption{CO$_2$e coverage build-up across the three matching layers. Direct Wolfram matches
-    cover 36\% of canonical ingredients; the manual alias map raises this to 86\%; the OWID
+    cover 48\% of canonical ingredients; the manual alias map raises this to 93\%; the OWID
     fallback closes the remaining gap to 100\%, covering all 103,908 recipe-ingredient rows.}
     \label{fig:coverage}
 \end{figure}
@@ -585,7 +602,7 @@ With every row assigned both a gram weight and an emission factor, the recipe-le
 \begin{equation}
     \text{co2e\_kg} = \sum_{i} \left( \text{qty\_amount}_i \times \text{g\_per\_unit}_i \times \frac{\text{co2\_kg\_per\_kg}_i}{1000} \right).
 \end{equation}
-This yields one score per recipe across all 9,997 recipes (median 9.04\,kg CO$_2$eq, mean 13.68\,kg CO$_2$eq), stored in \texttt{recipe\_co2.csv}. Because the gram weights are estimates rather than exact measurements, these values are best read as proportional indicators for comparative ranking rather than absolute measurements --- a framing carried through into the eco-score presented to the client. The assumptions underlying each conversion default are catalogued in Appendix~\ref{app:assumptions}.
+This yields one score per recipe across all 9,997 recipes (median 8.39\,kg CO$_2$eq, mean 13.41\,kg CO$_2$eq), stored in \texttt{recipe\_co2.csv}. Because the gram weights are estimates rather than exact measurements, these values are best read as proportional indicators for comparative ranking rather than absolute measurements --- a framing carried through into the eco-score presented to the client. The assumptions underlying each conversion default are catalogued in Appendix~\ref{app:assumptions}.
 
 \subsection{Knowledge Graph Design}
 
@@ -680,28 +697,30 @@ This appendix records the manual mappings used to achieve 100\% CO$_2$e and gram
 
 \subsection{Wolfram synonym map (\texttt{WOLFRAM\_MAP})}
 
-Recipe ingredient names mapped to Wolfram canonical food names. Some are exact synonyms; others are deliberate proxies (e.g.\ ghee mapped to butter, garam masala mapped to the generic ``spice'' category).
+Recipe ingredient names mapped to Wolfram canonical food names. Many are simple inflection matches to the Wolfram file's vocabulary (which pluralises most foods, e.g.\ almonds, cashews, cloves, chickpeas); others are deliberate proxies (e.g.\ ghee mapped to butter, garam masala mapped to the generic ``spice'' category).
 
 \begin{center}
 \begin{tabular}{ll|ll}
 \hline
 \textbf{Recipe name} & \textbf{Wolfram name} & \textbf{Recipe name} & \textbf{Wolfram name} \\
 \hline
-lentils (dal) & lentil & eggs & egg \\
+lentils (dal) & lentils & eggs & egg \\
 mint leaves & fresh mint & fenugreek leaves & fenugreek seed \\
 fresh coriander & coriander seed & curry leaves & curry powder \\
-tamarind paste & tamarind & chickpeas & chickpea \\
-sesame seeds & sesame & fish & fishes \\
-coriander & coriander seed & mustard seeds & mustard \\
-green chili & chili pepper & almonds & almond \\
-bell pepper & pepper & cashews & cashew \\
-oil / cooking oil & sesame oil & raisins & raisin \\
-all-purpose flour & wheat flour & bay leaf & herbs \\
-red chili powder & chili pepper & peas & pea \\
+coriander & coriander seed & chickpeas & chickpeas \\
+tamarind paste & tamarinds & fish & fishes \\
+sesame seeds & sesames & mustard seeds & mustard \\
+green chili & chili peppers & almonds & almonds \\
+red chili powder & chili peppers & cashews & cashews \\
+bell pepper & pepper & raisins & raisins \\
+oil / cooking oil & sesame oil & bay leaf & herbs \\
+all-purpose flour & wheat flour & peas & peas \\
 garam masala & spice & ghee & butter \\
 black pepper & black peppercorn & salt & sea salt \\
-cloves & clove & milk & milks \\
-water & bottled water & & \\
+cloves & cloves & milk & milk \\
+water & bottled water & carrot & carrots \\
+cauliflower & cauliflowers & chicken & chickens \\
+onion & onions & & \\
 \hline
 \end{tabular}
 \end{center}
@@ -717,7 +736,7 @@ water & bottled water & & \\
 
 \subsection{OWID fallback map (\texttt{OWID\_MAP})}
 
-Ingredients absent from the Wolfram trial file, mapped to OWID GHG categories. Only the entries that the pipeline actually fell back to are operative; the relevant proxies are noted.
+Only 4 ingredients are absent from the Wolfram file (under any inflection); these draw their CO$_2$e value from OWID GHG categories.
 
 \begin{center}
 \begin{tabular}{ll}
@@ -726,11 +745,13 @@ Ingredients absent from the Wolfram trial file, mapped to OWID GHG categories. O
 \hline
 paneer & Cheese \\
 semolina & Wheat \& Rye \\
+potato & Potatoes \\
+tomato & Tomatoes \\
 \hline
 \end{tabular}
 \end{center}
 
-\noindent\textbf{Approximations:} \textbf{paneer $\rightarrow$ Cheese} (paneer is a fresh cheese; the OWID Cheese category is a reasonable but not exact match, 23.88\,kg CO$_2$e/kg). \textbf{semolina $\rightarrow$ Wheat \& Rye} (OWID has no refined-semolina category; the whole-grain wheat category slightly overestimates emissions for refined semolina --- no closer category exists).
+\noindent\textbf{Notable proxies / approximations:} \textbf{paneer $\rightarrow$ Cheese} (paneer is a fresh cheese; the OWID Cheese category is a reasonable but not exact match, 23.88\,kg CO$_2$e/kg). \textbf{semolina $\rightarrow$ Wheat \& Rye} (OWID has no refined-semolina category; the whole-grain wheat category slightly overestimates emissions for refined semolina --- no closer category exists). \textbf{potato} and \textbf{tomato} map to their direct OWID production categories.
 
 \subsection{USDA lookup synonyms (\texttt{USDA\_SYNONYMS})}
 

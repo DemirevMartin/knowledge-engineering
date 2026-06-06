@@ -78,7 +78,7 @@ foods = box(ax, COL1_X, ROW_TOP, W_SRC, BOX_H,
 
 wolf = box(ax, COL1_X, ROW_MID, W_SRC, BOX_H,
            "Food Carbon Footprint  ·  Wolfram",
-           "538 foods · CO₂e per kg\n+ OWID fallback (9 foods)",
+           "538 foods · CO₂e per kg\n+ OWID fallback (4 foods)",
            SRC)
 
 usda = box(ax, COL1_X, ROW_BOT, W_SRC, BOX_H,
@@ -99,7 +99,7 @@ co2 = box(ax, COL2_X, ROW_MID, W_PRO, BOX_H,
 
 gram = box(ax, COL2_X, ROW_BOT, W_PRO, BOX_H,
            "Gram-Weight Grounding",
-           "USDA lookup  52.9%\nHeuristic fallback  47.1%",
+           "USDA 52.9% · exact mass 17.2%\ngeneric fallback 29.9%",
            PROC)
 
 # ── Outputs ────────────────────────────────────────────────────────
@@ -110,7 +110,7 @@ calc = box(ax, COL3_X, ROW_MID, W_OUT, BOX_H,
 
 kg = box(ax, COL3_X, ROW_TOP, W_OUT, BOX_H,
          "Knowledge Graph",
-         "~202,000 nodes & edges\nqueried via SPARQL",
+         "~20,000 nodes · ~116,000 edges\nqueried via SPARQL",
          KG, title_fs=TITLE_FS + 1)
 
 # ── Arrows: sources → processing ──────────────────────────────────
