@@ -236,7 +236,7 @@ The dataset constitutes a \textbf{curated sample} rather than a universal collec
 
 \question{\subsubsection*{Are there recommended data splits (e.g., training, development/validation, testing)? If so, please provide a description of these splits, explaining the rationale behind them.}}
 
-No data splits were applied. The Knowledge Graph is constructed from the complete set of 9,997 recipe instances without partitioning into training, validation, or testing subsets. The analytical tasks (RQ1, RQ2, RQ3) are addressed through SPARQL queries over the full graph rather than through predictive model evaluation, so held-out partitions are not methodologically appropriate.
+No data splits were applied. The Knowledge Graph is constructed from the complete set of 9,997 recipe instances without partitioning into training, validation, or testing subsets. The analytical tasks (RQ1, RQ2, RQ3) are addressed through Cypher queries over the full graph rather than through predictive model evaluation, so held-out partitions are not methodologically appropriate.
 
 
 \question{\subsubsection*{Are there any errors, sources of noise, or redundancies in the dataset? If so, please provide a description.}}
@@ -467,19 +467,61 @@ Data was organised through a mapping hierarchy that bridges the specificity of c
 
 \question{\subsubsection*{How did you integrate the different datasets? What was the process for deciding which data to map to which data? If you wrote code for this, please link to it here.}}
 
-Integration was a three-step process designed to make culinary recipe data semantically compatible with scientific environmental data:
+Integration was a three-stage process designed to make culinary recipe data semantically compatible with scientific environmental data. The same end-to-end pipeline is summarised visually in Section~\ref{sec:solution} (Figure~\ref{fig:pipeline}); here we describe how the datasets were mapped together and report the resulting coverage and gram-weight statistics in full. Code is available in \texttt{main.ipynb} (CO$_2$e lookup pipeline) and \texttt{quantities.ipynb} (gram-weight grounding pipeline).
 
-\begin{itemize}
-    \item \textbf{Step 1: Ingredient Canonicalisation:} A Python script in \texttt{main.ipynb} extracted all unique ingredient names from \texttt{recipe\_ingredients.csv}. A manual synonym map (\texttt{WOLFRAM\_MAP}) collapsed surface-form variations to 58 canonical names aligned with Wolfram entries. The resulting mapping is recorded in \texttt{ingredient\_co2.csv}, which stores the canonical name, matched CO$_2$e value, and source (Wolfram or OWID) for each ingredient.
-    \item \textbf{Step 2: CO$_2$e Rate Assignment:} Each canonical ingredient was assigned a CO$_2$e rate in \texttt{main.ipynb}. Wolfram was queried first via \texttt{WOLFRAM\_MAP}. For the 4 ingredients not covered by Wolfram, the OWID GHG dataset was used via \texttt{OWID\_MAP}. This achieved 100\% CO$_2$e coverage across all 58 canonical ingredients.
-    \item \textbf{Step 3: Gram-Weight Grounding via USDA SR Legacy:} Each ingredient-quantity entry in \\ \texttt{recipe\_ingredients.csv} was converted from its original culinary unit to grams in \\ \texttt{quantities.ipynb}. The lookup searched the SR Legacy portion table (\texttt{food\_portion.csv} joined with \texttt{food.csv}) by keyword, filtered to rows with a matching unit type parsed from the \texttt{modifier} column, and returned the median gram weight of the five plainest-scoring matches. Liquid ingredients given in ml were converted using density values. Ingredients where no USDA match existed fell back to fixed unit defaults. The result is stored in \texttt{recipe\_ingredients\_grounded.csv}, which records \texttt{grams}, \texttt{g\_per\_unit}, and \texttt{usda\_tier} per row.
-\end{itemize}
+\paragraph{Stage 1: Ingredient canonicalisation and CO$_2$e rate assignment.}
+A Python script in \texttt{main.ipynb} extracted all unique ingredient names from \texttt{recipe\_ingredients.csv}. The raw file contains 103,908 ingredient line items but only 58 distinct base ingredients, obscured by surface-form variation (e.g.\ ``chopped onions'', ``red onion'', ``medium onions'' all denote onion). Each of the 58 canonical names was matched to a CO$_2$e emission factor through a three-layer strategy, building up coverage as shown in Figure~\ref{fig:coverage}. A first pass matched names directly against the Wolfram food list (28 ingredients, 48\%). A manual synonym map (\texttt{WOLFRAM\_MAP}) then aligned culinary names to Wolfram's vocabulary --- for example ``ghee'' $\rightarrow$ butter, ``garam masala'' $\rightarrow$ spice --- lifting coverage to 54 ingredients (93\%). The remaining 4 ingredients absent from Wolfram (paneer, semolina, potato, tomato) were resolved through an OWID GHG fallback (\texttt{OWID\_MAP}), reaching 100\% coverage of all 58 ingredients and all 103,908 rows. The resulting mapping is recorded in \texttt{ingredient\_co2.csv} (canonical name, matched CO$_2$e value, and source). The full synonym and fallback maps are documented in Appendix~\ref{app:mappings}.
 
-The final recipe-level CO$_2$e was computed as:
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{figures/05_coverage_buildup.png}
+    \caption{CO$_2$e coverage build-up across the three matching layers. Direct Wolfram matches
+    cover 48\% of canonical ingredients; the manual alias map raises this to 93\%; the OWID
+    fallback closes the remaining gap to 100\%, covering all 103,908 recipe-ingredient rows.}
+    \label{fig:coverage}
+\end{figure}
+
+The resulting per-ingredient emission factors span two orders of magnitude (Figure~\ref{fig:co2byingredient}), from sub-1\,kg CO$_2$e/kg for vegetables to 59.85\,kg CO$_2$e/kg for beef. This spread is what makes ingredient-level decomposition meaningful: a recipe's footprint is dominated by a few high-impact items (red meats, paneer, ghee) rather than spread evenly. Keeping ingredients canonical rather than grouping them into categories (e.g.\ keeping paneer and ghee separate rather than collapsing both to ``Dairy'') preserves this precision --- paneer maps to 23.88\,kg CO$_2$e/kg while ghee maps to 14.35\,kg CO$_2$e/kg.
+
+\begin{figure}[!hbtp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/04_ingredient_co2_by_source.png}
+    \caption{CO$_2$e emission factor per canonical ingredient, coloured by data source. The
+    long-tailed distribution --- beef, mutton, paneer, and shrimp far above the rest --- is what
+    allows a recipe's footprint to be attributed to a small number of high-impact ingredients.}
+    \label{fig:co2byingredient}
+\end{figure}
+
+\paragraph{Stage 2: Gram-weight grounding via USDA SR Legacy.}
+Emission factors are expressed per kilogram, but recipe quantities use culinary units (tablespoon, cup, ``to taste''). The same unit denotes very different masses depending on the ingredient: one tablespoon of fresh mint is roughly 2.5\,g while one tablespoon of minced beef is roughly 15\,g. Each ingredient-quantity entry in \texttt{recipe\_ingredients.csv} was therefore converted to grams in \texttt{quantities.ipynb} using a three-tier procedure, with the resulting split shown in Figure~\ref{fig:tier}. Tier~1 (52.9\% of rows) looks up an empirically measured gram weight in the USDA SR Legacy portion table (\texttt{food\_portion.csv} joined with \texttt{food.csv}), matching on ingredient keyword and unit type parsed from the \texttt{modifier} column, and taking the median of the five ``plainest'' (raw, unbranded) matches to avoid cooked or processed outliers. Tier~2 (17.2\%) covers quantities already given in absolute mass (g/kg), which pass through directly. Tier~3 (29.9\%) applies fixed fallback defaults where USDA has no matching entry, including density-based conversion for liquids given in ml and a conservative 5\,g default for irreducible cases such as ``to taste''. Every row records its resolution tier in \texttt{recipe\_ingredients\_grounded.csv} (\texttt{grams}, \texttt{g\_per\_unit}, \texttt{usda\_tier}) for full provenance.
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=0.5\linewidth]{figures/q01_usda_tier_overall.png}
+    \caption{Gram-weight resolution tiers across all 103,908 recipe-ingredient rows. The
+    majority (52.9\%) are grounded in empirically measured USDA SR Legacy portion weights;
+    17.2\% arrive as exact mass; the remaining 29.9\% rely on documented fallback defaults.}
+    \label{fig:tier}
+\end{figure}
+
+The tier mix is not uniform across units (Figure~\ref{fig:tierbyunit}): mass-based and common volumetric units (tbsp, tsp, cup, clove, count/medium) are well covered by USDA, whereas ``to taste'' and \texttt{ml} quantities --- which USDA does not encode --- fall entirely to the fallback tier. This concentrates the estimation uncertainty in a predictable, low-mass subset of the data (spices added ``to taste'' contribute little absolute mass), which is why the fallback share has limited effect on recipe-level totals.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{figures/q03_tier_by_unit.png}
+    \caption{Resolution tier split by unit type. USDA SR Legacy (blue) dominates the standard
+    culinary units, while \texttt{ml} and ``to taste'' quantities --- absent from USDA --- rely
+    on density-based or fixed fallbacks (orange). Uncertainty is thus concentrated in low-mass,
+    qualitative quantities.}
+    \label{fig:tierbyunit}
+\end{figure}
+
+\paragraph{Stage 3: Recipe-level CO$_2$e computation.}
+With every row assigned both a gram weight and an emission factor, the final recipe-level CO$_2$e was computed as the sum over its ingredients:
 \begin{equation}
     \text{co2e\_kg} = \sum_{i} \left( \text{qty\_amount}_i \times \text{g\_per\_unit}_i \times \frac{\text{co2\_kg\_per\_kg}_i}{1000} \right)
 \end{equation}
-Results are stored in \texttt{recipe\_co2.csv} (one row per recipe, 9,997 rows). Across all recipes, the median CO$_2$e is 8.39\,kg CO$_2$eq and the mean is 13.41\,kg CO$_2$eq.
+This yields one score per recipe, stored in \texttt{recipe\_co2.csv} (one row per recipe, 9,997 rows). Across all recipes, the median CO$_2$e is 8.39\,kg CO$_2$eq and the mean is 13.41\,kg CO$_2$eq. Because the gram weights are estimates rather than exact measurements, these values are best read as proportional indicators for comparative ranking rather than absolute measurements. The assumptions underlying each conversion default are catalogued in Appendix~\ref{app:assumptions}.
 
 \question{\subsubsection*{If you use data exchange in your project, describe your process and share your code.}}
 
@@ -488,7 +530,7 @@ Yes, data exchange was necessary because the source datasets were stored in diff
 \begin{itemize}
     \item \textbf{Format Conversion (JSON to CSV/Excel):} The Wolfram Food Carbon Footprint data was originally available as a \texttt{.json} file. A script parsed this JSON and exported it to a tabular Excel format with columns \texttt{Clean Name}, \texttt{CO2e Avg (kg)}, \texttt{CO2e Lower}, and \texttt{CO2e Upper}.
     \item \textbf{API Retrieval (OWID):} The OWID GHG dataset~\cite{owid_ghg} was fetched programmatically via HTTP request and filtered to the latest available year before being integrated into the CO$_2$e lookup table.
-    \item \textbf{Relational to Graph Exchange:} Flat tabular data (CSVs) was transformed into a graph structure by extracting cleaned nodes (Recipe, Ingredient, Cuisine) and edges (HAS\_INGREDIENT with gram-weight and CO$_2$e attributes) and loading them into the Knowledge Graph schema for SPARQL querying.
+    \item \textbf{Relational to Graph Exchange:} Flat tabular data (CSVs) was transformed into a graph structure by extracting cleaned nodes (Recipe, Ingredient, Cuisine) and edges (HAS\_INGREDIENT with gram-weight and CO$_2$e attributes) and loading them into the Neo4j Knowledge Graph schema for Cypher querying.
 \end{itemize}
 
 Code is available in \texttt{main.ipynb} (CO$_2$e lookup pipeline) and \texttt{quantities.ipynb} (gram-weight grounding pipeline).
@@ -587,11 +629,12 @@ The dataset does not relate to people in any meaningful sense. It describes culi
 
 
 \section{Knowledge graph description and solution}
+\label{sec:solution}
 \question{\subsubsection*{Describe the knowledge graph structure, and the arguments behind them, in detail. Provide a diagram of the graph structure as well as an excerpt of the graph with nodes and values. Provide queries that the client can use to find the answer to their question(s).}}
 
 \subsection{Data Preprocessing Pipeline}
 
-The three source datasets (described in Sections 3 and 4) are mutually incompatible as delivered: recipe quantities are free-text culinary units, while emission factors are per-kilogram rates, and neither side shares a common ingredient vocabulary. The preprocessing pipeline reconciles them into a single query-ready representation in which every recipe carries an estimated carbon footprint in kg CO$_2$eq. This required both automated processing and manual curation, and was the most complex stage of the project. The end-to-end pipeline is shown in Figure~\ref{fig:pipeline} and has three stages.
+The three source datasets are mutually incompatible as delivered: recipe quantities are free-text culinary units, while emission factors are per-kilogram rates, and neither side shares a common ingredient vocabulary. A three-stage preprocessing pipeline reconciles them into a single query-ready representation in which every recipe carries an estimated carbon footprint in kg CO$_2$eq: (1) ingredient canonicalisation and CO$_2$e rate assignment (Wolfram primary, OWID fallback, 100\% coverage of the 58 canonical ingredients), (2) gram-weight grounding via USDA SR Legacy portion data, and (3) recipe-level CO$_2$e summation. The end-to-end pipeline is shown in Figure~\ref{fig:pipeline}. This stage required both automated processing and manual curation and was the most complex part of the project; it is documented in full --- including the per-ingredient emission factors, the coverage build-up, the gram-weight tier split, and the recipe-level CO$_2$e formula --- under Section~4 (``How did you integrate the different datasets?'' and ``If you use data exchange in your project''), with the conversion assumptions and ingredient mappings in Appendices~\ref{app:assumptions} and~\ref{app:mappings}. The output is one CO$_2$e score per recipe (median 8.39\,kg CO$_2$eq, mean 13.41\,kg CO$_2$eq), which enriches the \texttt{HAS\_INGREDIENT} edges described below.
 
 \begin{figure}[h]
     \centering
@@ -599,63 +642,10 @@ The three source datasets (described in Sections 3 and 4) are mutually incompati
     \caption{Data sources and exchange pipeline. Three source datasets (blue) feed three
     processing stages (amber): ingredient canonicalisation, CO$_2$e rate assignment, and
     gram-weight grounding. These produce recipe-level CO$_2$e scores (green), which enrich the
-    \texttt{HAS\_INGREDIENT} edges of the Knowledge Graph (purple).}
+    \texttt{HAS\_INGREDIENT} edges of the Knowledge Graph (purple). The stages are detailed in
+    Section~4.}
     \label{fig:pipeline}
 \end{figure}
-
-\paragraph{Stage 1: Ingredient canonicalisation.}
-The raw \texttt{recipe\_ingredients.csv} contains 103,908 ingredient line items but only 58 distinct base ingredients, obscured by surface-form variation (e.g.\ ``chopped onions'', ``red onion'', ``medium onions'' all denote onion). Each of the 58 canonical names was matched to a CO$_2$e emission factor through a three-layer strategy, building up coverage as shown in Figure~\ref{fig:coverage}. A first pass matched names directly against the Wolfram food list (28 ingredients, 48\%). A manual synonym map then aligned culinary names to Wolfram's vocabulary --- for example ``ghee'' $\rightarrow$ butter, ``garam masala'' $\rightarrow$ spice --- lifting coverage to 54 ingredients (93\%). The remaining 4 ingredients absent from Wolfram (paneer, semolina, potato, tomato) were resolved through an OWID GHG fallback, reaching 100\% coverage of all 58 ingredients and all 103,908 rows. The full synonym and fallback maps are documented in Appendix~\ref{app:mappings}.
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=\textwidth]{figures/05_coverage_buildup.png}
-    \caption{CO$_2$e coverage build-up across the three matching layers. Direct Wolfram matches
-    cover 48\% of canonical ingredients; the manual alias map raises this to 93\%; the OWID
-    fallback closes the remaining gap to 100\%, covering all 103,908 recipe-ingredient rows.}
-    \label{fig:coverage}
-\end{figure}
-
-The resulting per-ingredient emission factors span two orders of magnitude (Figure~\ref{fig:co2byingredient}), from sub-1\,kg CO$_2$e/kg for vegetables to 59.85\,kg CO$_2$e/kg for beef. This spread is what makes ingredient-level decomposition meaningful: a recipe's footprint is dominated by a few high-impact items (red meats, paneer, ghee) rather than spread evenly. Keeping ingredients canonical rather than grouping them into categories (e.g.\ keeping paneer and ghee separate rather than collapsing both to ``Dairy'') preserves this precision --- paneer maps to 23.88\,kg CO$_2$e/kg while ghee maps to 14.35\,kg CO$_2$e/kg.
-
-\begin{figure}[!hbtp]
-    \centering
-    \includegraphics[width=\textwidth]{figures/04_ingredient_co2_by_source.png}
-    \caption{CO$_2$e emission factor per canonical ingredient, coloured by data source. The
-    long-tailed distribution --- beef, mutton, paneer, and shrimp far above the rest --- is what
-    allows a recipe's footprint to be attributed to a small number of high-impact ingredients.}
-    \label{fig:co2byingredient}
-\end{figure}
-
-\paragraph{Stage 2: Gram-weight grounding.}
-Emission factors are expressed per kilogram, but recipe quantities use culinary units (tablespoon, cup, ``to taste''). Crucially, the same unit denotes very different masses depending on the ingredient: one tablespoon of fresh mint is roughly 2.5\,g while one tablespoon of minced beef is roughly 15\,g. Each ingredient-quantity row was therefore converted to grams using a three-tier procedure, with the resulting split shown in Figure~\ref{fig:tier}. Tier~1 (52.9\% of rows) looks up an empirically measured gram weight in the USDA SR Legacy portion table, matching on ingredient keyword and unit type and taking the median of the five ``plainest'' (raw, unbranded) matches to avoid cooked or processed outliers. Tier~2 (17.2\%) covers quantities already given in absolute mass (g/kg), which pass through directly. Tier~3 (29.9\%) applies fixed fallback defaults where USDA has no matching entry, including density-based conversion for liquids given in ml and a conservative 5\,g default for irreducible cases such as ``to taste''. Every row records its resolution tier in the \texttt{usda\_tier} column for full provenance.
-
-\begin{figure}[!htbp]
-    \centering
-    \includegraphics[width=0.5\linewidth]{figures/q01_usda_tier_overall.png}
-    \caption{Gram-weight resolution tiers across all 103,908 recipe-ingredient rows. The
-    majority (52.9\%) are grounded in empirically measured USDA SR Legacy portion weights;
-    17.2\% arrive as exact mass; the remaining 29.9\% rely on documented fallback defaults.}
-    \label{fig:tier}
-\end{figure}
-
-The tier mix is not uniform across units (Figure~\ref{fig:tierbyunit}): mass-based and common volumetric units (tbsp, tsp, cup, clove, count/medium) are well covered by USDA, whereas ``to taste'' and \texttt{ml} quantities --- which USDA does not encode --- fall entirely to the fallback tier. This concentrates the estimation uncertainty in a predictable, low-mass subset of the data (spices added ``to taste'' contribute little absolute mass), which is why the fallback share has limited effect on recipe-level totals.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.75\textwidth]{figures/q03_tier_by_unit.png}
-    \caption{Resolution tier split by unit type. USDA SR Legacy (blue) dominates the standard
-    culinary units, while \texttt{ml} and ``to taste'' quantities --- absent from USDA --- rely
-    on density-based or fixed fallbacks (orange). Uncertainty is thus concentrated in low-mass,
-    qualitative quantities.}
-    \label{fig:tierbyunit}
-\end{figure}
-
-\paragraph{Stage 3: Recipe-level CO$_2$e computation.}
-With every row assigned both a gram weight and an emission factor, the recipe-level footprint is the sum over its ingredients:
-\begin{equation}
-    \text{co2e\_kg} = \sum_{i} \left( \text{qty\_amount}_i \times \text{g\_per\_unit}_i \times \frac{\text{co2\_kg\_per\_kg}_i}{1000} \right).
-\end{equation}
-This yields one score per recipe across all 9,997 recipes (median 8.39\,kg CO$_2$eq, mean 13.41\,kg CO$_2$eq), stored in \texttt{recipe\_co2.csv}. Because the gram weights are estimates rather than exact measurements, these values are best read as proportional indicators for comparative ranking rather than absolute measurements --- a framing carried through into the eco-score presented to the client. The assumptions underlying each conversion default are catalogued in Appendix~\ref{app:assumptions}.
 
 \subsection{Schema and Ontology}
 
