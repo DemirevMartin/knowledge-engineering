@@ -7,7 +7,36 @@
 \usepackage{fullpage}
 \usepackage{url}
 \usepackage{amsmath}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{listings}
+\usepackage{xcolor}
 
+\lstdefinelanguage{Cypher}{
+  morekeywords={MATCH, WITH, WHERE, RETURN, ORDER, BY, LIMIT, AS,
+                 DESC, ASC, AND, OR, IN, DISTINCT, COUNT, SUM, AVG,
+                 ROUND, CASE, WHEN, THEN, END, COLLECT, UNWIND},
+  sensitive=true,
+  morecomment=[l]{//},
+}
+
+\lstdefinestyle{cypherstyle}{
+  language=Cypher,
+  basicstyle=\ttfamily\small,
+  keywordstyle=\bfseries,
+  commentstyle=\normalfont,
+  backgroundcolor=\color{white},
+  frame=single,
+  framerule=0.4pt,
+  rulecolor=\color{black},
+  breaklines=true,
+  breakatwhitespace=false,
+  columns=flexible,
+  xleftmargin=2pt,
+  xrightmargin=2pt,
+  framexleftmargin=5pt,
+  framexrightmargin=5pt,
+}
 \newcommand{\question}[1]{#1}
 
 \title{Knowledge Graph for Culinary Sustainability and User Engagement Analysis}
@@ -256,6 +285,8 @@ To our knowledge, the dataset has not been associated with a published academic 
 
 The exact collection mechanism is not documented by the dataset owner. Based on the structure and content of the data (recipe names, ingredient lists with quantities, step-by-step instructions, nutritional profiles, and categorical metadata), the most plausible collection method is a combination of web scraping from South Asian recipe websites and manual curation to standardise categorical fields such as cuisine origin, cooking method, and dietary flags. No validation procedure is described by the creator.
 
+
+
 \question{\subsubsection*{How was the data associated with each instance acquired? Was the data directly observable (e.g., raw text, movie ratings), reported by subjects (e.g., survey responses), or indirectly inferred/derived from other data (e.g., part-of-speech tags, model-based guesses for age or language)? If data was reported by subjects or indirectly inferred/derived from other data, was the data validated/verified? If so, please describe how.}}
 
 The data is a mixture of directly observable content and derived or inferred attributes:
@@ -489,22 +520,46 @@ No additional comments.
 \question{\subsubsection*{How will the dataset be distributed? (e.g., tarball on
 website, API, GitHub; does the data have a DOI and is it
 archived redundantly?)}}
-[1-10]
+The dataset will be distributed and made freely accessible via a public GitHub repository. The complete knowledge graph, preprocessing pipeline code, and the associated data files are hosted at the following Git Repository \href{https://github.com/DemirevMartin/knowledge-engineering}{}. Currently, the dataset does not have a formally assigned Digital Object Identifier (DOI). Redundant archiving has not been explicitly established across multiple separate platforms; rather, the project relies entirely on the standard distributed version control and infrastructure availability provided by GitHub.
 
 
 \question{\subsubsection*{When will the dataset be released/first distributed?
 What license (if any) is it distributed under?}}
+The dataset was first distributed on June 8, 2026, coinciding with the publication date of this datasheet. It is available immediately via the project's public GitHub repository.
 
+Regarding licensing, the compiled Knowledge Graph is distributed under the \textbf{Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)} license. This specific designation is necessitated by the legal constraints of the primary source data. The 10K South Asian Recipes corpus (Dataset Foods) is licensed under CC BY-SA 4.0, which explicitly mandates that any derivative works or integrated adaptations be shared under the exact same license terms.
+
+All other integrated reference sources are fully compatible with this release: Dataset Quantities (USDA SR Legacy) is in the US public domain, the OWID GHG fallback data is licensed under CC BY 4.0, and the Wolfram Food Carbon Footprint data permits free use with attribution. Therefore, any future users of this Knowledge Graph are legally permitted to use, adapt, and share the dataset freely, provided they give appropriate attribution and distribute their contributions under this same CC BY-SA 4.0 license.
+
+ 
 
 \question{\subsubsection*{Are there any copyrights on the data?}}
+
+Yes. While the integrated Knowledge Graph is an original derivative work compiled by our team, it relies on foundational datasets that retain the copyrights of their original creators, with one exception:
+
+\begin{itemize}
+    \item \textbf{Dataset Foods (10K South Asian Recipes):} Retains the copyright of the original Kaggle contributor (Ahsan Neural) and is licensed under CC BY-SA 4.0. 
+    \item \textbf{Dataset Wolfram:} Compiled by Wolfram Research; it is copyrighted but free to use with proper attribution. 
+    \item \textbf{Our World in Data (OWID) GHG Emissions:} Retains the copyright of its creators but is distributed openly under a CC BY 4.0 license. 
+    \item \textbf{Dataset Quantities (USDA SR Legacy):} Because this is a US federal government publication, it is in the public domain and is entirely free of copyright or license restrictions. 
+\end{itemize}
+Because our Knowledge Graph is a derivative work that incorporates Dataset Foods, we are legally required to distribute our finalized dataset under the same CC BY-SA 4.0 share-alike terms. This means our team holds the copyright to the integrated graph architecture, but we openly license it to the public under those specific Creative Commons conditions. 
+
 
 
 
 \question{\subsubsection*{Are there any fees or access/export restrictions?}}
 
+No, there are no fees or access/export restrictions associated with the Knowledge Graph or its underlying data sources.
+
+\begin{itemize}
+    \item \textbf{Fees:} None of the constituent datasets require payment or subscriptions. The Wolfram Food Carbon Footprint dataset is free to use with proper attribution , the Our World in Data (OWID) GHG fallback data explicitly states that no fees apply , and the USDA SR Legacy data is a free government resource. Consequently, utilizing the finalized Knowledge Graph incurs zero costs. 
+    \item \textbf{Access and Export Restrictions:} The data relies entirely on open-access repositories. The foundational recipe corpus (Dataset Foods) is openly accessible under a CC BY-SA 4.0 license , and the USDA portion data has absolutely no license restrictions. Furthermore, because the completed Knowledge Graph and its preprocessing pipelines are hosted on a public GitHub repository, the dataset is globally accessible. There are no export limitations, paywalls, or proprietary software restrictions, provided that future users adhere to the share-alike and attribution requirements of the overarching CC BY-SA 4.0 license. 
+\end{itemize}
+
 
 \question{\subsubsection*{Any other comments?}}
-
+No Comments.
 
 \section{Legal and Ethical Considerations}
 
@@ -536,7 +591,7 @@ The dataset does not relate to people in any meaningful sense. It describes culi
 
 \subsection{Data Preprocessing Pipeline}
 
-The three source datasets (described in Sections 3 and 4) are mutually incompatible as delivered: recipe quantities are free-text culinary units, while emission factors are per-kilogram rates, and neither side shares a common ingredient vocabulary. The preprocessing pipeline reconciles them into a single query-ready representation in which every recipe carries an estimated carbon footprint in kg CO$_2$eq. This required both automated processing and manual curation, and was the most complex stage of the project. The end-to-end pipeline is shown in Figure~\ref{fig:pipeline}.
+The three source datasets (described in Sections 3 and 4) are mutually incompatible as delivered: recipe quantities are free-text culinary units, while emission factors are per-kilogram rates, and neither side shares a common ingredient vocabulary. The preprocessing pipeline reconciles them into a single query-ready representation in which every recipe carries an estimated carbon footprint in kg CO$_2$eq. This required both automated processing and manual curation, and was the most complex stage of the project. The end-to-end pipeline is shown in Figure~\ref{fig:pipeline} and has three stages.
 
 \begin{figure}[h]
     \centering
@@ -548,10 +603,8 @@ The three source datasets (described in Sections 3 and 4) are mutually incompati
     \label{fig:pipeline}
 \end{figure}
 
-The pipeline has three stages, executed across \texttt{main.ipynb} (CO$_2$e lookup) and \texttt{quantities.ipynb} (gram-weight grounding).
-
 \paragraph{Stage 1: Ingredient canonicalisation.}
-The raw \texttt{recipe\_ingredients.csv} contains 103,908 ingredient line items but only 58 distinct base ingredients, obscured by surface-form variation (e.g.\ ``chopped onions'', ``red onion'', ``medium onions'' all denote onion). Each of the 58 canonical names was matched to a CO$_2$e emission factor through a three-layer strategy, building up coverage as shown in Figure~\ref{fig:coverage}. A first pass matched names directly against the Wolfram food list (28 ingredients, 48\%). A manual synonym map (\texttt{WOLFRAM\_MAP}) then aligned culinary names to Wolfram's vocabulary --- for example ``ghee'' $\rightarrow$ butter, ``garam masala'' $\rightarrow$ spice --- lifting coverage to 54 ingredients (93\%). The remaining 4 ingredients absent from Wolfram (paneer, semolina, potato, tomato) were resolved through an OWID GHG fallback (\texttt{OWID\_MAP}), reaching 100\% coverage of all 58 ingredients and all 103,908 rows. The full synonym and fallback maps are documented in Appendix~\ref{app:mappings}.
+The raw \texttt{recipe\_ingredients.csv} contains 103,908 ingredient line items but only 58 distinct base ingredients, obscured by surface-form variation (e.g.\ ``chopped onions'', ``red onion'', ``medium onions'' all denote onion). Each of the 58 canonical names was matched to a CO$_2$e emission factor through a three-layer strategy, building up coverage as shown in Figure~\ref{fig:coverage}. A first pass matched names directly against the Wolfram food list (28 ingredients, 48\%). A manual synonym map then aligned culinary names to Wolfram's vocabulary --- for example ``ghee'' $\rightarrow$ butter, ``garam masala'' $\rightarrow$ spice --- lifting coverage to 54 ingredients (93\%). The remaining 4 ingredients absent from Wolfram (paneer, semolina, potato, tomato) were resolved through an OWID GHG fallback, reaching 100\% coverage of all 58 ingredients and all 103,908 rows. The full synonym and fallback maps are documented in Appendix~\ref{app:mappings}.
 
 \begin{figure}[h]
     \centering
@@ -564,7 +617,7 @@ The raw \texttt{recipe\_ingredients.csv} contains 103,908 ingredient line items 
 
 The resulting per-ingredient emission factors span two orders of magnitude (Figure~\ref{fig:co2byingredient}), from sub-1\,kg CO$_2$e/kg for vegetables to 59.85\,kg CO$_2$e/kg for beef. This spread is what makes ingredient-level decomposition meaningful: a recipe's footprint is dominated by a few high-impact items (red meats, paneer, ghee) rather than spread evenly. Keeping ingredients canonical rather than grouping them into categories (e.g.\ keeping paneer and ghee separate rather than collapsing both to ``Dairy'') preserves this precision --- paneer maps to 23.88\,kg CO$_2$e/kg while ghee maps to 14.35\,kg CO$_2$e/kg.
 
-\begin{figure}[h]
+\begin{figure}[!hbtp]
     \centering
     \includegraphics[width=\textwidth]{figures/04_ingredient_co2_by_source.png}
     \caption{CO$_2$e emission factor per canonical ingredient, coloured by data source. The
@@ -576,9 +629,9 @@ The resulting per-ingredient emission factors span two orders of magnitude (Figu
 \paragraph{Stage 2: Gram-weight grounding.}
 Emission factors are expressed per kilogram, but recipe quantities use culinary units (tablespoon, cup, ``to taste''). Crucially, the same unit denotes very different masses depending on the ingredient: one tablespoon of fresh mint is roughly 2.5\,g while one tablespoon of minced beef is roughly 15\,g. Each ingredient-quantity row was therefore converted to grams using a three-tier procedure, with the resulting split shown in Figure~\ref{fig:tier}. Tier~1 (52.9\% of rows) looks up an empirically measured gram weight in the USDA SR Legacy portion table, matching on ingredient keyword and unit type and taking the median of the five ``plainest'' (raw, unbranded) matches to avoid cooked or processed outliers. Tier~2 (17.2\%) covers quantities already given in absolute mass (g/kg), which pass through directly. Tier~3 (29.9\%) applies fixed fallback defaults where USDA has no matching entry, including density-based conversion for liquids given in ml and a conservative 5\,g default for irreducible cases such as ``to taste''. Every row records its resolution tier in the \texttt{usda\_tier} column for full provenance.
 
-\begin{figure}[h]
+\begin{figure}[!htbp]
     \centering
-    \includegraphics[width=0.85\textwidth]{figures/q01_usda_tier_overall.png}
+    \includegraphics[width=0.5\linewidth]{figures/q01_usda_tier_overall.png}
     \caption{Gram-weight resolution tiers across all 103,908 recipe-ingredient rows. The
     majority (52.9\%) are grounded in empirically measured USDA SR Legacy portion weights;
     17.2\% arrive as exact mass; the remaining 29.9\% rely on documented fallback defaults.}
@@ -587,9 +640,9 @@ Emission factors are expressed per kilogram, but recipe quantities use culinary 
 
 The tier mix is not uniform across units (Figure~\ref{fig:tierbyunit}): mass-based and common volumetric units (tbsp, tsp, cup, clove, count/medium) are well covered by USDA, whereas ``to taste'' and \texttt{ml} quantities --- which USDA does not encode --- fall entirely to the fallback tier. This concentrates the estimation uncertainty in a predictable, low-mass subset of the data (spices added ``to taste'' contribute little absolute mass), which is why the fallback share has limited effect on recipe-level totals.
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{figures/q03_tier_by_unit.png}
+    \includegraphics[width=0.75\textwidth]{figures/q03_tier_by_unit.png}
     \caption{Resolution tier split by unit type. USDA SR Legacy (blue) dominates the standard
     culinary units, while \texttt{ml} and ``to taste'' quantities --- absent from USDA --- rely
     on density-based or fixed fallbacks (orange). Uncertainty is thus concentrated in low-mass,
@@ -604,16 +657,382 @@ With every row assigned both a gram weight and an emission factor, the recipe-le
 \end{equation}
 This yields one score per recipe across all 9,997 recipes (median 8.39\,kg CO$_2$eq, mean 13.41\,kg CO$_2$eq), stored in \texttt{recipe\_co2.csv}. Because the gram weights are estimates rather than exact measurements, these values are best read as proportional indicators for comparative ranking rather than absolute measurements --- a framing carried through into the eco-score presented to the client. The assumptions underlying each conversion default are catalogued in Appendix~\ref{app:assumptions}.
 
-\subsection{Knowledge Graph Design}
+\subsection{Schema and Ontology}
 
+The NutriSmart Knowledge Graph adopts a property graph model implemented in Neo4j, chosen for its flexibility in representing both structural relationships and rich edge-level attributes. It's a requirement that a purely relational schema would struggle to express cleanly, since the most analytically valuable information (CO2e contribution, quantity, provenance) lives on the relationship between a recipe and an ingredient rather than on either entity alone.
+
+\subsubsection{Design rationale}
+The schema was designed following the pay-as-you-go methodology of Sequeda and Lassila, which favors an incremental, source-driven approach to ontology construction over a top-down, fully axiomatized design. Rather than modeling the entire domain of food and nutrition exhaustively, the graph was scoped to exactly the entities and relationships needed to answer the project's three research questions, with each node and relationship type traceable back to one of the three source datasets (the Kaggle South Asian Recipes corpus, the Wolfram Food Carbon Footprint dataset, and USDA SR Legacy portion data).
+This produces a deliberately compact ontology: three node types and two relationship types, but with most of the analytical "weight" concentrated in the \texttt{HAS\_INGREDIENT}
+ relationship, which acts as the integration point between the recipe domain, the nutrition domain, and the sustainability domain.
+
+\subsubsection{Core Entities}
+\paragraph{Recipe entity}
+The \texttt{:Recipe} represents a single dish and carries:
+\begin{itemize}
+    \item descriptive attributes (name, cuisine, difficulty, meal type),
+    \item categorical filters (\texttt{is\_vegetarian}, \texttt{is\_halal}),
+    \item engagement metrics (rating, review\_count),
+    \item a derived sustainability metric (\texttt{total\_co2e}), computed as the sum of the \texttt{co2e\_kg} values across all of that recipe's \texttt{HAS\_INGREDIENT} edges.
+    \item Treating \texttt{total\_co2e} as a derived property rather than a stored raw value keeps the graph internally consistent while still allowing fast filtering and sorting on carbon footprint without recomputation at query time.
+
+\end{itemize}
+
+\paragraph{Ingredient entity }
+The \texttt{:Ingredient} node is the smallest of the three entity types (58 distinct ingredients), reflecting the fact that ingredient identity was normalized and grounded against the USDA SR Legacy reference set during preprocessing.
+\\
+Each \texttt{:Ingredient} carries:
+\begin{itemize}
+    \item a single emission factor (\texttt{co2\_kg\_per\_kg}),
+    \item a category label (Proteins, Dairy, Vegetables, Grains, Spices, Others), which supports category-level aggregation in sustainability analyses.
+\end{itemize}
+
+\paragraph{NutritionalProfile entity}
+The \texttt{:NutritionalProfile} node holds per-serving nutritional values (calories, protein, fat, carbohydrates, fiber, sugar) and is linked to its parent recipe via a foreign key. It is kept as a separate node type rather than folded into \texttt{:Recipe} to preserve a clean conceptual separation between ``what the recipe \emph{is}'' and ``what is nutritionally true of one serving of it,'' and to allow the nutritional dimension to be queried, extended, or re-sourced independently in future iterations of the graph.
+
+\subsubsection{Relationships}
+
+\paragraph{HAS\_INGREDIENT}
+\texttt{HAS\_INGREDIENT} is the richest relationship in the schema and the main edge for cross-dataset integration. Each edge carries five properties:
+\begin{itemize}
+    \item raw quantity information (\texttt{grams}, \texttt{qty\_amount}, \texttt{qty\_unit}),
+    \item the derived emission contribution (\texttt{co2e\_kg}),
+    \item a provenance flag (\texttt{usda\_tier}) indicating whether the quantity was grounded against USDA reference portions or estimated via a generic fallback.
+\end{itemize}
+
+\noindent Storing \texttt{co2e\_kg} per edge---rather than only storing the emission factor on \texttt{:Ingredient}---allows the same ingredient to contribute differently to different recipes depending on the quantity used, which is essential for recipe-level carbon comparisons.
+
+\paragraph{HAS\_NUTRITION}
+\texttt{HAS\_NUTRITION} is a deliberately minimal, structural-only 1:1 relationship connecting each \texttt{:Recipe} to its corresponding \texttt{:NutritionalProfile}. No properties are attached to this edge, since the relationship exists purely to partition recipe attributes into two node types for modeling clarity rather than to encode any additional semantic information.
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/Schema.png}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.48\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/Ontology.png}
+    \end{minipage}
+    \caption{The NutriSmart knowledge graph schema (left) and ontology (right). The schema defines the three node types-\texttt{Recipe}, \texttt{Ingredient}, and \texttt{NutritionalProfile} and the two relationship types (\texttt{HAS\_INGREDIENT}, \texttt{HAS\_NUTRITION}).The ontology extends this with semantic roles, cardinality constraints, derivation rules, and inference axioms used to support the three research questions.}
+    \label{fig:schema-ontology}
+\end{figure}
+
+
+
+\paragraph{RQ3: Relationship between carbon footprint, nutrition, and user engagement}
+RQ3 traverses \texttt{:Recipe} $\rightarrow$ \texttt{:NutritionalProfile} via \texttt{HAS\_NUTRITION}, combining \texttt{total\_co2e}, \texttt{rating}, and \texttt{review\_count} with nutritional attributes (calories, protein, fat, sugar, sodium). This supports multi-dimensional analysis linking sustainability, nutrition, and engagement.
+
+The fact that all three research questions can be answered using only one- or two-hop traversals from \texttt{:Recipe} validates the schema's design: the central node and its two outgoing relationships form a minimal but sufficient backbone for the project's analytical goals.
+
+
+\subsection{Graph Excerpt}
+
+Figure~\ref{fig:Graph Excerpt} shows a subgraph of the NutriSmart knowledge graph as rendered in Neo4j Browser, centered on three South Asian recipes: \textit{Dal Makhani}, \textit{Sajji}, and \textit{Aloo Gosht}. Some ingredients, such as \textit{Salt}, \textit{Onion}, and \textit{Garlic}, are shared across multiple recipes, while others, including \textit{Mutton} and \textit{Paneer}, are associated with only a single recipe. Each recipe node is connected to exactly one nutritional profile through a \texttt{HAS\_NUTRITION} relationship and to a variable number of ingredient nodes through \texttt{HAS\_INGREDIENT} relationships, reflecting the differing complexity of recipes. Tables~1--4 provide representative property values for one example of each node and relationship type in the graph.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{figures/visualisation_new.png}
+    \caption{Neo4j visualization of a subgraph from the NutriSmart knowledge graph. Blue nodes represent recipe entities, pink nodes represent ingredient entities, and yellow nodes represent nutrition profile entities.}
+    \label{fig:Graph Excerpt}
+\end{figure}
+\
+\subsubsection{Sample Node and Edge Properties}
+
+\begin{figure}[H]
+\begin{minipage}{0.48\textwidth}
+\centering
+\begin{tabular}{ll}
+\hline
+\textbf{Property} & \textbf{Value} \\
+\hline
+cuisine & Pakistani \\
+difficulty & Medium \\
+ingredient\_count & 11 \\
+is\_halal & true \\
+is\_vegetarian & false \\
+meal\_type & Dinner \\
+rating & 3.6 \\
+recipe\_id & RCP00001 \\
+recipe\_name & Sajji \\
+review\_count & 2070 \\
+total\_co2e & 23.7414499999999993 \\
+\hline
+\end{tabular}
+\captionof{table}{\texttt{:Recipe} node properties}
+\end{minipage}
+\hfill
+\begin{minipage}{0.48\textwidth}
+\centering
+\begin{tabular}{ll}
+\hline
+\textbf{Property} & \textbf{Value} \\
+\hline
+recipe\_id & RCP00001 \\
+calories & 500.0 \\
+carbohydrates\_g & 54.0 \\
+fat\_g & 28.0 \\
+fiber\_g & 10.0 \\
+protein\_g & 45.0 \\
+sugar\_g & 18.0 \\
+\hline
+\end{tabular}
+\captionof{table}{\texttt{:NutritionalProfile} node properties}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+\begin{minipage}{0.48\textwidth}
+\centering
+\begin{tabular}{ll}
+\hline
+\textbf{Property} & \textbf{Value} \\
+\hline
+ingredient\_name & Chicken \\
+category & Proteins \\
+co2\_kg\_per\_kg & 9.87 \\
+\hline
+\end{tabular}
+\captionof{table}{\texttt{:Ingredient} node properties}
+\end{minipage}
+\hfill
+\begin{minipage}{0.48\textwidth}
+\centering
+\begin{tabular}{ll}
+\hline
+\textbf{Property} & \textbf{Value} \\
+\hline
+co2e\_kg & 0.20929999999999999 \\
+grams & 299.0 \\
+qty\_amount & 299.0 \\
+qty\_unit & g \\
+usda\_tier & generic \\
+\hline
+\end{tabular}
+\captionof{table}{\texttt{HAS\_INGREDIENT} edge properties}
+\end{minipage}
+\end{figure}
 % TODO: Knowledge Graph schema, diagram, node/edge excerpt, and SPARQL queries.
 
 \subsection{Research Question Implementation}
 
+\paragraph{Research Question 1:}Which ingredients contribute most significantly to recipe-level carbon footprint ranges, and how frequently do these ingredients appear in the top-k highly rated recipes?
+
+\paragraph{Approach:}
+The RQ1 was answered through a two-stage graph traversal over the NutriSmart KG. The first stage identified the reference set of top recipes by
+ordering all 9{,}997 \texttt{:Recipe} nodes by \texttt{rating} and
+taking the top 500. The recipe IDs of this set were collected and
+carried forward as a reference list for the second stage. The second stage traversed every \texttt{HAS\_INGREDIENT}
+relationship from \texttt{:Recipe} to \texttt{:Ingredient} across the
+\emph{entire corpus} of recipes, aggregating per ingredient: the total
+CO2e contribution across all recipes (\texttt{total\_co2\_kg}, summed
+from the \texttt{co2e\_kg} edge property), the average CO2e
+contribution per use (\texttt{avg\_co2\_per\_use\_kg}), the number of
+distinct recipes the ingredient appears in
+(\texttt{recipes\_used\_in}), and a conditional count of how many of
+those recipes fall within the top-500 set
+(\texttt{top500\_frequency}, expressed also as \texttt{pct\_top500}).
+Ingredients were then ranked by their overall (corpus-wide)
+\texttt{total\_co2\_kg}, and the top 20 were retained, so the
+ranking step itself is independent of the top-500 set, with the
+top-500 membership used only to compute each of these top-20
+ingredients' frequency among highly-rated recipes. The results showed a clear separation between the two metrics. Ranked
+by total CO2e, Beef, Paneer, and Mutton dominate, but Paneer's high
+rank is driven largely by its frequent use (2{,}653 recipes) rather
+than a high per-use cost. Ranked by average CO2e per use, Beef
+($\approx$21.5\,kg) and Mutton ($\approx$13.2\,kg) are clear outliers,
+roughly 2--3$\times$ higher than the next tier (Paneer, Shrimp,
+Butter, Ghee). On the frequency side, Onion stands out as it appears in
+essentially all 9{,}997 recipes and 100\% of the top-500, despite
+having the lowest average CO2e per use ($\approx$0.10\,kg) in the
+top-20. Most other high-CO2e ingredients (Beef, Mutton, Ghee, Cream)
+appear in only 9--17\% of the top-500 recipes, while ingredients such
+as Paneer, Lentils, and Curry Leaves appear somewhat more often
+(20--25\%). 
+
+\subsubsection*{Limitations}
+
+Several limitations apply to this analysis and should be kept in mind
+when interpreting the results. The choice of ``top-$k$'' is somewhat arbitrary. The top-500 cutoff
+(5\% of all recipes) was chosen as a round number rather than derived
+from any statistical criterion, and the results (particularly
+\texttt{pct\_top500}) would shift if a different $k$ were chosen
+(e.g., top-100 vs.\ top-1000), especially for ingredients near the
+boundary of inclusion. A sensitivity check across multiple values of
+$k$ was not performed. The CO2e values are static per-kilogram emission factors (from the
+Wolfram Food Carbon Footprint / Poore and Nemecek dataset) applied
+uniformly to every recipe, regardless of sourcing, region, season, or
+production method. A ``Beef'' used in one recipe is assumed to have
+the same carbon intensity as ``Beef'' in any other, which is a
+simplification,  real-world emissions vary substantially by farming
+practice and geography. The \texttt{total\_co2\_kg} metric conflates two distinct effects - 
+per-use carbon intensity and the frequency of use, into a single
+number, which can make an ingredient appear more or less
+``significant'' depending on which of the two underlying drivers is
+responsible. We mitigated this by reporting both
+\texttt{total\_co2\_kg} and \texttt{avg\_co2\_per\_use\_kg}, but a
+reader focusing on only one of these could draw an incomplete
+picture.
+
+\subsubsection*{Query}
+
+\begin{lstlisting}[style=cypherstyle]
+// Step 1: identify the top-500 rated recipes (used ONLY for the
+// frequency check below)
+MATCH (r:Recipe)
+WITH r ORDER BY r.rating DESC LIMIT 500
+WITH collect(r.recipe_id) AS topRecipeIds
+
+// Step 2: aggregate CO2e stats over ALL ~10K recipes (no filtering
+// by topRecipeIds here)
+MATCH (allR:Recipe)-[rel:HAS_INGREDIENT]->(i:Ingredient)
+WITH topRecipeIds,
+     i.ingredient_name AS ingredient,
+     i.category AS category,
+     sum(rel.co2e_kg) AS total_co2_contribution,
+     avg(rel.co2e_kg) AS avg_co2_per_use,
+     count(DISTINCT allR) AS recipes_used_in,
+     count(DISTINCT CASE WHEN allR.recipe_id IN topRecipeIds THEN allR END) AS top500_frequency
+
+// Step 3: rank by overall CO2e contribution (across all recipes),
+// take top 20, then report how often each of THOSE ingredients
+// shows up in the top-500
+RETURN ingredient, category,
+       round(total_co2_contribution * 1000) / 1000 AS total_co2_kg,
+       round(avg_co2_per_use * 1000) / 1000 AS avg_co2_per_use_kg,
+       recipes_used_in,
+       top500_frequency,
+       round(top500_frequency * 1000.0 / 500) / 10 AS pct_top500
+ORDER BY total_co2_kg DESC
+LIMIT 20
+\end{lstlisting}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.75\linewidth]{rq1_neo4.png}
+    \caption{Neo4j graph visualization showing the :Ingredient node "Beef" (red, center) and its \texttt{HAS\_INGREDIENT} connections to recipes among the top-500 highest-rated recipes in the NutriSmart KG. The node details panel confirms Beef's properties: category = "Proteins" and \texttt{co2\_kg\_per\_kg} = 59.85, the highest emission factor in the dataset. Despite this high per-kilogram footprint, Beef appears in only 85 of the 500 top-rated recipes (17\%), illustrating that a high-carbon ingredient does not necessarily dominate the most highly-rated recipes.}
+    \label{fig:neo4j_viz_rQ}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\linewidth]{rq1_avgco2_vs_topfreq (1).png}
+    \caption{Average CO2e contribution per use
+(\texttt{avg\_co2\_per\_use\_kg}, blue bars, left axis) and the
+percentage of top-500 rated recipes containing each ingredient
+(\texttt{pct\_top500}, orange line, right axis) for the 20
+ingredients with the highest average per-use CO2e in the
+NutriSmart KG. Beef and Mutton have substantially higher per-use
+carbon costs than all other ingredients, while Onion is a notable
+outlier on frequency (present in 100\% of the top-500 rated
+recipes despite having the lowest average CO2e per use). Overall,
+the two metrics show little correspondence, indicating that an
+ingredient's carbon intensity is not a strong predictor of its
+prevalence among highly-rated recipes (RQ1).}
+    \label{fig:RQ1_results}
+\end{figure}
+
 % TODO: RQ1 --- ingredient contribution to carbon footprint ranges and frequency in top-k rated recipes.
+\paragraph{Research Question 2:} What $top-N$ co-occurring ingredient pairs and their average CO2e contribution emerge among the $top-k$ high-carbon recipes?
 
+\paragraph{Approach:}
+RQ2 was addressed through a two-stage graph traversal over the NutriSmart KG, focusing on identifying culinary synergies that drive up emissions. The first stage isolated the $top-k$ high-impact recipes by ordering all 9{,}997 \texttt{:Recipe} nodes by their engineered environmental target (\texttt{co2e\_kg}) in descending order and filtering for the top 500. This established our reference sub-graph of high-carbon dishes. In the second stage, the query identified all ingredient pairs \texttt{(i1, i2)} that co-occurred within these specific recipes. To prevent redundant permutations (e.g., counting Onion-Beef and Beef-Onion separately), a structural constraint (\texttt{id(i1) < id(i2)}) was applied. For each unique pair, the query aggregated the co-occurrence frequency (\texttt{cooccurrence\_count}) and calculated the average combined carbon contribution of that specific pair (\texttt{avg\_pair\_co2\_kg}) within the target recipes. 
+
+The findings reveal that the highest-emitting recipes are dominated by specific combinatorial patterns. While ubiquitous base ingredients (like Onion and Garlic) predictably have high co-occurrence frequencies across all recipes, ranking by the \texttt{avg\_pair\_co2\_kg} isolates the true drivers of emissions. Pairs combining heavy ruminant meats with traditional dairy fats—such as Beef paired with Ghee, or Mutton paired with Paneer—yield exceptionally high combined footprints. This indicates that extreme recipe-level carbon footprints in this dataset are rarely the result of a single high-impact ingredient, but rather the compounding effect of combining multiple high-impact categories (e.g., meat + dairy) in single dishes.
+
+\subsubsection*{Limitations}
+Several limitations apply to this co-occurrence analysis. First, similar to RQ1, the cutoff for ``high-carbon'' ($k=500$) is an arbitrary threshold. Expanding this window could dilute the concentration of heavy meat/dairy pairs. Second, co-occurrence in the graph structure simply means both ingredients are listed in the recipe; it does not account for the ratio or proportion of the ingredients relative to one another (e.g., a recipe might be 90\% Beef and 10\% Paneer, but the pair is weighted equally in the frequency count). Finally, ubiquity bias remains a factor: aromatics and spices inherently co-occur with high-carbon meats frequently, which can crowd the top-N frequency lists unless the results are explicitly sorted by the pair's combined carbon weight rather than pure occurrence count.
+
+\subsubsection*{Query}
+
+\begin{lstlisting}[style=cypherstyle]
+// Step 1: Identify the top-500 highest-carbon recipes
+MATCH (r:Recipe)
+WITH r ORDER BY r.co2e_kg DESC LIMIT 500
+WITH collect(r) AS highCarbonRecipes
+
+// Step 2: Unwind and find co-occurring ingredient pairs within this subset
+UNWIND highCarbonRecipes AS r
+MATCH (r)-[rel1:HAS_INGREDIENT]->(i1:Ingredient)
+MATCH (r)-[rel2:HAS_INGREDIENT]->(i2:Ingredient)
+// Prevent reverse duplicate pairs (e.g., Beef-Onion vs Onion-Beef)
+WHERE id(i1) < id(i2) 
+WITH i1, i2, 
+     count(DISTINCT r) AS cooccurrence_count,
+     avg(rel1.co2e_kg + rel2.co2e_kg) AS avg_pair_co2_kg
+     
+// Step 3: Return the top 20 pairs sorted by their combined CO2e contribution
+RETURN i1.ingredient_name AS ingredient_1,
+       i2.ingredient_name AS ingredient_2,
+       cooccurrence_count,
+       round(avg_pair_co2_kg * 1000) / 1000 AS avg_pair_co2_kg
+ORDER BY avg_pair_co2_kg DESC, cooccurrence_count DESC
+LIMIT 20
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\linewidth]{RQ2 Visualisation.png}
+    \caption{Neo4j graph visualization detailing a localized cluster of high-carbon co-occurrence. The graph highlights a central high-footprint \texttt{:Recipe} node connected via \texttt{HAS\_INGREDIENT} edges to multiple high-impact \texttt{:Ingredient} nodes (e.g., Mutton and Ghee). The visualization demonstrates how the graph architecture captures the compounding environmental impact when multiple emission-heavy ingredients are structurally linked within a single culinary instance.}
+    \label{fig:neo4j_viz_rQ2}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\linewidth]{output.png}
+    \caption{Top 20 co-occurring ingredient pairs within the top-500 high-carbon recipes, ranked by their average combined CO2e contribution (blue bars, left axis). The overlaid points (orange, right axis) indicate the absolute frequency of co-occurrence. The chart illustrates that the highest emitting pairs strictly involve combinations of ruminant meats (Beef, Mutton) and dairy (Ghee, Paneer), whereas highly frequent pairings (e.g., Beef and Onion) do not necessarily yield the absolute highest combined carbon cost.}
+    \label{fig:RQ2_results}
+\end{figure}
 % TODO: RQ2 --- top-N co-occurring ingredient pairs and average CO2e among top-k high-carbon recipes.
+\paragraph{Research Question 3:} Is there a nutritional trade-off associated with a recipe’s carbon footprint, and does user engagement reflect awareness of this environmental cost?\\
 
+\noindent\textbf{Approach:} To answer RQ3, recipes were connected to their nutritional data through the \texttt{HAS\_NUTRITION} edge and each recipe was classified into a carbon tier. Instead of setting fixed thresholds, the query calculated quartile boundaries by sorting all \texttt{total\_co2e} values and extracting the 25th and 75th percentiles. Recipes below the 25th percentile were categorised as low carbon, those above the 75th percentile as high carbon, and the remainder as medium carbon. Each group was then aggregated in terms of average protein, fat, sugar, and calorie content, as well as average rating and review count.
+
+\begin{lstlisting}[style=cypherstyle]
+MATCH (r:Recipe)-[:HAS_NUTRITION]->(np:NutritionalProfile)
+WITH collect(r.total_co2e) AS all_co2e, collect(r) AS recipes, collect(np) AS profiles
+// Sort co2e values manually
+UNWIND all_co2e AS val
+WITH val, recipes, profiles
+ORDER BY val
+WITH collect(val) AS sorted_co2e, recipes, profiles
+UNWIND range(0, size(recipes)-1) AS idx
+WITH recipes[idx] AS r, profiles[idx] AS np, sorted_co2e
+WITH r, np, sorted_co2e,
+     sorted_co2e[toInteger(size(sorted_co2e)*0.75)] AS q75,
+     sorted_co2e[toInteger(size(sorted_co2e)*0.25)] AS q25
+WITH r, np,
+     CASE
+       WHEN r.total_co2e >= q75 THEN 'high'
+       WHEN r.total_co2e <= q25 THEN 'low'
+       ELSE 'medium'
+     END AS carbon_group
+RETURN carbon_group,
+       count(r)                          AS recipe_count,
+       round(avg(np.calories)*10)/10     AS avg_calories,
+       round(avg(np.protein_g)*10)/10    AS avg_protein,
+       round(avg(np.fat_g)*10)/10        AS avg_fat,
+       round(avg(np.sugar_g)*10)/10      AS avg_sugar,
+       round(avg(r.rating)*100)/100      AS avg_rating,
+       round(avg(r.review_count)*10)/10  AS avg_reviews
+ORDER BY carbon_group
+\end{lstlisting}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.60\textwidth]{figures/macronutrients.png}
+    \caption{Macro-nutrients by carbon group. Protein more than doubles across tiers (16.3~g in low to 34.2~g in high), and fat follows the same direction (20.9~g to 27.0~g), consistent with higher meat and dairy content in high-carbon recipes. Calories and sugar are stable across all three groups.}
+    \label{fig:macronutrients}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.60\linewidth]{figures/user_rating.png}
+    \caption{User engagement by carbon group. Ratings (4.24, 4.25, 4.26) and review counts (2,497, 2,495, 2,511) show no meaningful difference across carbon tiers. As users rate low-carbon recipes just as highly as high-carbon ones, there is a clear case for introducing eco-scores to make carbon cost visible, and for prioritising low-carbon recipes in recommendations without any expected drop in user satisfaction.}
+    \label{fig:user_rating}
+\end{figure}
 % TODO: RQ3 --- nutritional profile vs carbon footprint and relation to user engagement.
 
 
