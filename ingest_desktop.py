@@ -1,21 +1,4 @@
-"""
-ingest_desktop.py — NutriSmart Knowledge Graph ingestion (ontology-aligned).
-
-Target: Neo4j Desktop (bolt://localhost:7687)
-
-Schema (per ontology diagram):
-   Node labels    : Recipe, Ingredient, NutritionalProfile
-   Relationships  : HAS_INGREDIENT, HAS_NUTRITION
-
-Changes from ingest_graph.py:
-  CONTAINS          → HAS_INGREDIENT  (edge props: grams, qty_amount, qty_unit, co2e_kg, usda_tier)
-  NutritionalProfile nodes now created (were optional/commented-out before)
-  carbon_tier & total_co2e derived properties added to Recipe via inference rule R1
-
-Do NOT modify ingest_graph.py or graph_database.ipynb.
-
-Run:  python ingest_desktop.py
-"""
+""" Execute directly to ingest the local Neo4j Desktop database. """
 
 import os
 import pandas as pd
@@ -29,7 +12,7 @@ URI = "bolt://localhost:7687"
 AUTH = ("neo4j", "nutrismart12311")
 BATCH_SIZE = 500
 
-PROJECT_DIR = r"C:\Users\abith\Desktop\KE_final_repo\knowledge_engineering"
+PROJECT_DIR = r"C:\Users\Martin\Desktop\Quarter4\Knowledge Engineering\Project\knowledge-engineering"
 
 
 # ---------------------------------------------------------------------------
@@ -88,7 +71,7 @@ def clear_db(driver):
 
 
 # ---------------------------------------------------------------------------
-# Recipe nodes + BELONGS_TO_CUISINE edges
+# Recipe nodes
 # ---------------------------------------------------------------------------
 
 def _load_recipe_batch(tx, batch):
@@ -97,7 +80,6 @@ def _load_recipe_batch(tx, batch):
         UNWIND $rows AS row
         MERGE (r:Recipe {recipe_id: row.recipe_id})
         SET r.name               = row.name,
-            r.cuisine            = row.cuisine,
             r.category           = row.category,
             r.cooking_method     = row.cooking_method,
             r.difficulty         = row.difficulty,
@@ -132,7 +114,6 @@ def load_recipes(driver):
         rows.append({
             "recipe_id":           str(r["recipe_id"]),
             "name":                str(r["recipe_name"]),
-            "cuisine":             str(r["cuisine"]),
             "category":            str(r.get("category", "")),
             "cooking_method":      str(r.get("cooking_method", "")),
             "difficulty":          str(r.get("difficulty", "")),
