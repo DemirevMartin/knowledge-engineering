@@ -1,6 +1,6 @@
 # NutriSmart Knowledge Graph for Culinary Sustainability
 
-A knowledge graph that links South Asian recipes to ingredient-level carbon emission factors and nutritional data, built for the client **NutriSmart** to generate recipe-level "eco-scores" (kg CO₂eq per recipe). The accompanying report (`main.tex`) documents the datasets, preprocessing, schema, and the three research questions the graph is designed to answer.
+A knowledge graph that links South Asian recipes to ingredient-level carbon emission factors and nutritional data, built to generate recipe-level "eco-scores" (kg CO₂eq per recipe).
 
 ## Research questions
 
@@ -10,14 +10,13 @@ A knowledge graph that links South Asian recipes to ingredient-level carbon emis
 
 ## Source datasets
 
-| Name | Source | Role | Licence |
-|------|--------|------|---------|
-| Dataset Foods | Kaggle "10K South Asian Recipes" | Recipes, ingredients, nutrition, ratings | CC BY-SA 4.0 |
-| Dataset Wolfram | Wolfram Food Carbon Footprint | Primary CO₂e emission factors (538 foods) | Free use w/ attribution |
-| OWID GHG | Our World in Data | Fallback CO₂e for 4 foods absent from Wolfram | CC BY 4.0 |
-| Dataset Quantities | USDA FoodData Central SR Legacy (2018) | Gram-weight conversion (culinary unit → grams) | US public domain |
+| Name | Source | Role |
+|------|--------|------|
+| Dataset Foods | Kaggle "10K South Asian Recipes" | Recipes, ingredients, nutrition, ratings |
+| Dataset Wolfram | Wolfram Food Carbon Footprint | Primary CO₂e emission factors (538 foods) |
+| OWID GHG | Our World in Data | Fallback CO₂e for 4 foods absent from Wolfram |
+| Dataset Quantities | USDA FoodData Central SR Legacy (2018) | Gram-weight conversion (culinary unit → grams) |
 
-The compiled knowledge graph is distributed under **CC BY-SA 4.0** (inherited from Dataset Foods' share-alike terms).
 
 ## Pipeline overview
 
@@ -76,29 +75,5 @@ The three sources are mutually incompatible as delivered (free-text culinary qua
    - Connection settings (`URI`, `AUTH`) and an absolute `PROJECT_DIR` are
      **hardcoded** near the top of `ingest_desktop.py` — update these for your
      machine before running.
-3. **Query** — run `gdb.ipynb` for the RQ1/RQ2/RQ3 Cypher queries and results.
-4. **Figures** — `visualization_preprocessing/` notebooks and `data_sources.py`
-   regenerate the report figures.
-
-## Known discrepancies
-
-Open items where the **report/diagram** and the **ingestion code** disagree.
-These need to be reconciled (fix the code *or* the docs), after which the
-ingestion and RQ queries/results should be re-run:
-
-1. **Cuisine node** — `ingest_desktop.py` creates `Cuisine` + `BELONGS_TO_CUISINE`
-   (4 nodes / 3 edges), and the report's Section 2 lists them, but Section 7.2
-   and the schema diagram show only 3 nodes / 2 edges.
-2. **`Ingredient.category`** — present in the diagram, tables, and the RQ1 query
-   text, but **not** written by `ingest_desktop.py` (`load_ingredients` sets only
-   `ingredient_name`, `co2_kg_per_kg`, `usda_tier`), and not selected by the
-   working query in `gdb.ipynb`.
-3. **`HAS_INGREDIENT` edge properties** — diagram/Table 4/Section 7.2 list
-   `qty_amount` and `qty_unit` in addition to `grams`/`co2e_kg`/`usda_tier`, but
-   the edge loader writes only the latter three.
-4. **RQ2 ordering property** — the printed RQ2 query sorts by `r.co2e_kg`, but the
-   Recipe-level carbon property is `total_co2e` (`co2e_kg` is an *edge*
-   property). Verify against the notebook that produced the RQ2 results.
-
-> If any of these change query outputs, the **numbers and figures in Section 7.4
-> of the report must be regenerated** to match.
+3. **Figures** — `visualization_preprocessing/` notebooks and `data_sources.py`
+   regenerate the preprocessing visualizations.
