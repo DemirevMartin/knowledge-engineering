@@ -4,13 +4,11 @@ ingest_desktop.py — NutriSmart Knowledge Graph ingestion (ontology-aligned).
 Target: Neo4j Desktop (bolt://localhost:7687)
 
 Schema (per ontology diagram):
-  Node labels    : Recipe, Ingredient, Cuisine, NutritionalProfile
-  Relationships  : HAS_INGREDIENT, BELONGS_TO_CUISINE, HAS_NUTRITION
+   Node labels    : Recipe, Ingredient, NutritionalProfile
+   Relationships  : HAS_INGREDIENT, HAS_NUTRITION
 
 Changes from ingest_graph.py:
-  CuisineType       → Cuisine
-  CONTAINS          → HAS_INGREDIENT  (edge props: grams, co2e_kg, usda_tier)
-  BELONGS_TO        → BELONGS_TO_CUISINE
+  CONTAINS          → HAS_INGREDIENT  (edge props: grams, qty_amount, qty_unit, co2e_kg, usda_tier)
   NutritionalProfile nodes now created (were optional/commented-out before)
   carbon_tier & total_co2e derived properties added to Recipe via inference rule R1
 
@@ -31,7 +29,7 @@ URI = "bolt://localhost:7687"
 AUTH = ("neo4j", "nutrismart12311")
 BATCH_SIZE = 500
 
-PROJECT_DIR = r"c:\Users\Martin\Desktop\Quarter4\Knowledge Engineering\Project\knowledge-engineering"
+PROJECT_DIR = r"C:\Users\abith\Desktop\KE_final_repo\knowledge_engineering"
 
 
 # ---------------------------------------------------------------------------
@@ -68,7 +66,6 @@ def create_constraints(driver):
         # Uniqueness constraints (automatically create a backing index)
         "CREATE CONSTRAINT recipe_id IF NOT EXISTS FOR (r:Recipe) REQUIRE r.recipe_id IS UNIQUE",
         "CREATE CONSTRAINT ingredient_name IF NOT EXISTS FOR (i:Ingredient) REQUIRE i.ingredient_name IS UNIQUE",
-        "CREATE CONSTRAINT cuisine_name IF NOT EXISTS FOR (c:Cuisine) REQUIRE c.name IS UNIQUE",
         "CREATE CONSTRAINT np_id IF NOT EXISTS FOR (np:NutritionalProfile) REQUIRE np.recipe_id IS UNIQUE",
         # Lookup indexes
         "CREATE INDEX recipe_rating IF NOT EXISTS FOR (r:Recipe) ON (r.avg_rating)",
@@ -119,17 +116,7 @@ def _load_recipe_batch(tx, batch):
             r.avg_rating         = row.avg_rating,
             r.total_reviews      = row.total_reviews,
             r.estimated_cost_usd = row.estimated_cost_usd,
-            r.date_added         = row.date_added,
-            r.calories           = row.calories,
-            r.protein_g          = row.protein_g,
-            r.carbohydrates_g    = row.carbohydrates_g,
-            r.fat_g              = row.fat_g,
-            r.fiber_g            = row.fiber_g,
-            r.sugar_g            = row.sugar_g,
-            r.sodium_mg          = row.sodium_mg,
-            r.cholesterol_mg     = row.cholesterol_mg
-        MERGE (c:Cuisine {name: row.cuisine})
-        MERGE (r)-[:BELONGS_TO_CUISINE]->(c)
+            r.date_added         = row.date_added
         """,
         rows=batch,
     )
@@ -165,14 +152,6 @@ def load_recipes(driver):
             "total_reviews":       _safe_float(r.get("review_count")),
             "estimated_cost_usd":  _safe_float(r.get("estimated_cost_usd")),
             "date_added":          str(r.get("date_added", "")),
-            "calories":            _safe_float(r.get("calories")),
-            "protein_g":           _safe_float(r.get("protein_g")),
-            "carbohydrates_g":     _safe_float(r.get("carbohydrates_g")),
-            "fat_g":               _safe_float(r.get("fat_g")),
-            "fiber_g":             _safe_float(r.get("fiber_g")),
-            "sugar_g":             _safe_float(r.get("sugar_g")),
-            "sodium_mg":           _safe_float(r.get("sodium_mg")),
-            "cholesterol_mg":      _safe_float(r.get("cholesterol_mg")),
         })
 
     _run_batched(driver, _load_recipe_batch, rows)
@@ -188,7 +167,8 @@ def _load_ingredient_batch(tx, batch):
         UNWIND $rows AS row
         MERGE (i:Ingredient {ingredient_name: row.ingredient_name})
         SET i.co2_kg_per_kg = row.co2_kg_per_kg,
-            i.usda_tier     = row.usda_tier
+            i.usda_tier     = row.usda_tier,
+            i.category      = row.category
         """,
         rows=batch,
     )
@@ -198,7 +178,6 @@ def load_ingredients(driver):
     co2_df = pd.read_csv(os.path.join(PROJECT_DIR, "preprocessing", "ingredient_co2.csv"))
     grounded = pd.read_csv(
         os.path.join(PROJECT_DIR, "preprocessing", "recipe_ingredients_grounded.csv"),
-        usecols=["ingredient_name", "usda_tier"],
     )
 
     # Build lookups from co2 file (column is 'ingredient', not 'ingredient_name')
@@ -216,6 +195,15 @@ def load_ingredients(driver):
         .to_dict()
     )
 
+    category_lu = (
+        grounded
+        .dropna(subset=["ingredient_name"])
+        .drop_duplicates("ingredient_name")
+        .assign(ingredient_name=lambda x: x["ingredient_name"].str.strip().str.lower())
+        .set_index("ingredient_name")["category"]
+        .to_dict()
+    ) if "category" in grounded.columns else {}
+
     all_names = grounded["ingredient_name"].str.strip().str.lower().dropna().unique()
 
     rows = [
@@ -223,6 +211,7 @@ def load_ingredients(driver):
             "ingredient_name": name,
             "co2_kg_per_kg":   _safe_float(co2_lu.get(name)),
             "usda_tier":       str(tier_lu.get(name, "generic")),
+            "category":        str(category_lu.get(name, "Others")),
         }
         for name in all_names
     ]
@@ -243,7 +232,9 @@ def _load_has_ingredient_batch(tx, batch):
         MERGE (r)-[h:HAS_INGREDIENT]->(i)
         SET h.grams     = row.grams,
             h.co2e_kg   = row.co2e_kg,
-            h.usda_tier = row.usda_tier
+            h.usda_tier = row.usda_tier,
+            h.qty_amount = row.qty_amount,
+            h.qty_unit   = row.qty_unit
         """,
         rows=batch,
     )
@@ -269,6 +260,8 @@ def load_has_ingredient(driver):
             "grams":           grams,
             "co2e_kg":         co2e,
             "usda_tier":       str(r.get("usda_tier", "generic")),
+            "qty_amount":      _safe_float(r.get("qty_amount")),
+            "qty_unit":        str(r.get("qty_unit", "")),
         })
 
     _run_batched(driver, _load_has_ingredient_batch, rows)
@@ -314,9 +307,7 @@ def create_nutritional_profiles(driver):
                 np.fat_g                = r.fat_g,
                 np.sugar_g              = r.sugar_g,
                 np.fiber_g              = r.fiber_g,
-                np.carbohydrates_g      = r.carbohydrates_g,
-                np.sodium_mg            = r.sodium_mg,
-                np.cholesterol_mg       = r.cholesterol_mg
+                np.carbohydrates_g      = r.carbohydrates_g
             MERGE (r)-[:HAS_NUTRITION]->(np)
             """
         )
@@ -332,10 +323,8 @@ def verify(driver):
     checks = {
         "Recipe nodes":             "MATCH (r:Recipe)               RETURN count(r) AS n",
         "Ingredient nodes":         "MATCH (i:Ingredient)           RETURN count(i) AS n",
-        "Cuisine nodes":            "MATCH (c:Cuisine)              RETURN count(c) AS n",
         "NutritionalProfile nodes": "MATCH (np:NutritionalProfile)  RETURN count(np) AS n",
         "HAS_INGREDIENT edges":     "MATCH ()-[h:HAS_INGREDIENT]->()     RETURN count(h) AS n",
-        "BELONGS_TO_CUISINE edges": "MATCH ()-[b:BELONGS_TO_CUISINE]->() RETURN count(b) AS n",
         "HAS_NUTRITION edges":      "MATCH ()-[n:HAS_NUTRITION]->()      RETURN count(n) AS n",
         "Recipes w/ carbon_tier":   "MATCH (r:Recipe) WHERE r.carbon_tier IS NOT NULL RETURN count(r) AS n",
         "Recipes w/ total_co2e":    "MATCH (r:Recipe) WHERE r.total_co2e  IS NOT NULL RETURN count(r) AS n",
@@ -355,8 +344,8 @@ def verify(driver):
     print(f"\n  Node labels:         {labels}")
     print(f"  Relationship types:  {rels}")
 
-    expected_labels = {"Cuisine", "Ingredient", "NutritionalProfile", "Recipe"}
-    expected_rels = {"BELONGS_TO_CUISINE", "HAS_INGREDIENT", "HAS_NUTRITION"}
+    expected_labels = {"Ingredient", "NutritionalProfile", "Recipe"}
+    expected_rels = {"HAS_INGREDIENT", "HAS_NUTRITION"}
     missing_l = expected_labels - set(labels)
     missing_r = expected_rels - set(rels)
 
